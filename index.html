@@ -2486,7 +2486,10 @@ function getSessionForDow(dow, weekIdx) {
   // dow: 0=Mon ... 6=Sun
   const plan = RUN_PLAN[weekIdx];
   if (!plan) return null;
-  const [wk, phase, tue, thu, sun] = plan;
+  const phase = plan.phase || '';
+  const tue = plan.tue?.dist || 0;
+  const thu = plan.thu?.dist || 0;
+  const sun = plan.sun?.dist || 0;
   const sessions = [
     { type: 'gym-a', label: 'Gym A · Lower', detail: 'Lower Body + Core' },
     { type: 'run-easy', label: `Easy ${tue.toFixed(1)}km`, detail: `Target: ${tue.toFixed(1)} km` },
@@ -2651,7 +2654,7 @@ function showWeekDetail(weekIdx) {
   const plan = RUN_PLAN[weekIdx];
   if (!plan) return;
 
-  title.textContent = `WEEK ${weekIdx + 1} — ${plan[1].toUpperCase()}`;
+  title.textContent = `WEEK ${weekIdx + 1} — ${plan.phase?.toUpperCase() || ''}`;
 
   const start = new Date(state.startDate + 'T00:00:00');
   const weekStart = new Date(start);
