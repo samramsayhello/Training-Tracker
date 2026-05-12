@@ -419,6 +419,38 @@
     text-align: center;
   }
 
+  .history-summary {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.78rem;
+    color: var(--text-mid);
+    margin-bottom: 18px;
+  }
+
+  .history-row td {
+    background: rgba(255,107,53,0.06);
+    border-top: none;
+  }
+
+  .history-row-content {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    align-items: center;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.78rem;
+    color: var(--text);
+  }
+
+  .history-label {
+    color: var(--text-dim);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  .history-values {
+    color: var(--text);
+  }
+
   /* SPLIT BADGE */
   .split-badge {
     font-family: 'Bebas Neue', sans-serif;
@@ -505,6 +537,42 @@
 
   .wc-up { background: rgba(239,68,68,0.15); color: var(--danger); }
   .wc-down { background: rgba(34,197,94,0.15); color: var(--success); }
+
+  .weight-chart {
+    margin-bottom: 18px;
+    padding: 14px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+  }
+
+  .weight-chart svg {
+    width: 100%;
+    height: 180px;
+    overflow: visible;
+  }
+
+  .weight-chart-line {
+    fill: none;
+    stroke: var(--accent-run);
+    stroke-width: 2;
+  }
+
+  .weight-chart-area {
+    fill: rgba(0,229,160,0.12);
+  }
+
+  .weight-chart-dot {
+    fill: var(--accent-run);
+    stroke: #0d0f14;
+    stroke-width: 2;
+  }
+
+  .weight-chart-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.72rem;
+    fill: var(--text-mid);
+  }
 
   /* TOAST */
   .toast {
@@ -936,24 +1004,13 @@
           <div style="font-family:'DM Mono',monospace;font-size:0.65rem;color:var(--text-dim);margin-bottom:6px;letter-spacing:1px;">WEIGHT (KG)</div>
           <input type="number" id="weightInput" placeholder="e.g. 82.5" step="0.1" style="width:120px;" />
         </div>
-        <div>
-          <div style="font-family:'DM Mono',monospace;font-size:0.65rem;color:var(--text-dim);margin-bottom:6px;letter-spacing:1px;">PERSON</div>
-          <select id="weightPerson">
-            <option value="p1">Person 1 (Running)</option>
-            <option value="p2">Person 2</option>
-          </select>
-        </div>
         <button class="btn btn-run" onclick="addWeightEntry()">LOG</button>
       </div>
     </div>
 
-    <div style="display:flex;gap:14px;margin-bottom:14px;flex-wrap:wrap;">
-      <button class="btn btn-ghost" id="wTabP1" onclick="switchWeightPerson('p1')" style="border-color:var(--accent-run);color:var(--accent-run);">PERSON 1</button>
-      <button class="btn btn-ghost" id="wTabP2" onclick="switchWeightPerson('p2')">PERSON 2</button>
-    </div>
-
     <div class="card" id="weightLog">
       <div class="section-label"><span class="dot dot-run"></span> WEIGHT HISTORY</div>
+      <div id="weightChart" class="weight-chart"></div>
       <div id="weightEntries"></div>
     </div>
   </div>
@@ -978,9 +1035,9 @@
 
     <!-- Legend -->
     <div class="cal-legend">
-      <div class="legend-item"><div class="legend-dot" style="background:var(--accent-gym);"></div>GYM A (PUSH)</div>
-      <div class="legend-item"><div class="legend-dot" style="background:#ffaa60;"></div>GYM B (PULL)</div>
-      <div class="legend-item"><div class="legend-dot" style="background:#ff6040;"></div>GYM C (LEGS)</div>
+      <div class="legend-item"><div class="legend-dot" style="background:var(--accent-gym);"></div>GYM A (LOWER)</div>
+      <div class="legend-item"><div class="legend-dot" style="background:#ffaa60;"></div>GYM B (UPPER)</div>
+      <div class="legend-item"><div class="legend-dot" style="background:#ff6040;"></div>GYM C (FULL)</div>
       <div class="legend-item"><div class="legend-dot" style="background:#4ade80;"></div>EASY RUN</div>
       <div class="legend-item"><div class="legend-dot" style="background:#fbbf24;"></div>TEMPO RUN</div>
       <div class="legend-item"><div class="legend-dot" style="background:var(--accent-run);"></div>LONG RUN</div>
@@ -1021,9 +1078,9 @@
     <div style="margin-bottom:14px;">
       <div style="font-family:'DM Mono',monospace;font-size:0.65rem;color:var(--text-dim);margin-bottom:8px;letter-spacing:1px;">SESSION TYPE</div>
       <select id="modalSplitSelect" style="width:100%;">
-        <option value="A">Session A — Push (Chest / Shoulders / Triceps)</option>
-        <option value="B">Session B — Pull (Back / Biceps / Rear Delt)</option>
-        <option value="C">Session C — Legs & Core</option>
+        <option value="A">Session A — Lower Body + Core</option>
+        <option value="B">Session B — Upper Push + Pull</option>
+        <option value="C">Session C — Full Body + Conditioning</option>
       </select>
     </div>
     <div>
@@ -1071,41 +1128,72 @@ const RUN_PLAN = [
   [26,'Race Week',3.0,2.0,21.1],
 ];
 
+// Gym split data imported from Queenstown HM v13 gym updated
 const GYM_SPLITS = {
   A: {
-    name: 'Push — Chest / Shoulders / Triceps',
+    name: 'GYM A — LOWER BODY + CORE',
+    warmup: [
+      { name: 'Air bike or easy row', sets: 1, repsTarget: '5 min', rest: '—' },
+      { name: 'Kneeling hip flexor stretch — each side', sets: 1, repsTarget: '45s × 2', rest: '—' },
+      { name: 'Glute bridge — slow and controlled', sets: 1, repsTarget: '2 × 10 reps', rest: '—' },
+      { name: 'Banded clamshell — each side', sets: 1, repsTarget: '2 × 15 reps', rest: '—' },
+    ],
     exercises: [
-      { name: 'Flat Barbell Bench Press', sets: 4, repsTarget: '8–10', rest: '90s' },
-      { name: 'Incline DB Press', sets: 3, repsTarget: '10–12', rest: '75s' },
-      { name: 'Cable Flye', sets: 3, repsTarget: '12–15', rest: '60s' },
-      { name: 'Overhead Press (BB)', sets: 4, repsTarget: '8–10', rest: '90s' },
-      { name: 'Lateral Raise', sets: 3, repsTarget: '15–20', rest: '45s' },
-      { name: 'Skull Crushers', sets: 3, repsTarget: '10–12', rest: '60s' },
-      { name: 'Tricep Pushdown', sets: 3, repsTarget: '12–15', rest: '45s' },
+      { name: 'Barbell Back Squat', sets: 4, repsTarget: '10–12', rest: '90s' },
+      { name: 'Romanian Deadlift', sets: 3, repsTarget: '10–12', rest: '75s' },
+      { name: 'Barbell Hip Thrust', sets: 3, repsTarget: '12–15', rest: '60s' },
+      { name: 'KB Goblet Squat', sets: 3, repsTarget: '15', rest: '60s' },
+      { name: 'KB Walking Lunge', sets: 3, repsTarget: '10 per side', rest: '60s' },
+      { name: 'Hanging Leg Raise', sets: 3, repsTarget: '12–15', rest: '45s' },
+      { name: 'Plank', sets: 3, repsTarget: '45–60s', rest: '45s' },
+      { name: 'Dead Bug', sets: 3, repsTarget: '10 per side', rest: '45s' },
+    ],
+    cooldown: [
+      { name: 'Core cool-down circuit: Plank / Glute bridge hold / Hip flexor stretch', sets: 1, repsTarget: '3 rounds', rest: '30s rest between rounds' },
     ]
   },
   B: {
-    name: 'Pull — Back / Biceps / Rear Delt',
+    name: 'GYM B — UPPER PUSH + PULL',
+    warmup: [
+      { name: 'Row or ski erg — easy pace', sets: 1, repsTarget: '5 min', rest: '—' },
+      { name: 'Band pull-apart', sets: 1, repsTarget: '2 × 20 reps', rest: '—' },
+      { name: 'Band external rotation — each side', sets: 1, repsTarget: '2 × 15 reps', rest: '—' },
+      { name: 'Shoulder circles and arm swings', sets: 1, repsTarget: '30s each', rest: '—' },
+    ],
     exercises: [
-      { name: 'Deadlift', sets: 4, repsTarget: '5–6', rest: '120s' },
-      { name: 'Barbell Row', sets: 4, repsTarget: '8–10', rest: '90s' },
-      { name: 'Lat Pulldown', sets: 3, repsTarget: '10–12', rest: '75s' },
-      { name: 'Seated Cable Row', sets: 3, repsTarget: '12–15', rest: '60s' },
-      { name: 'Face Pull', sets: 3, repsTarget: '15–20', rest: '45s' },
-      { name: 'Barbell Curl', sets: 3, repsTarget: '10–12', rest: '60s' },
-      { name: 'Hammer Curl', sets: 3, repsTarget: '12–15', rest: '45s' },
+      { name: 'Barbell Bench Press', sets: 4, repsTarget: '10–12', rest: '90s' },
+      { name: 'Barbell Overhead Press', sets: 4, repsTarget: '8–10', rest: '90s' },
+      { name: 'Barbell Row', sets: 4, repsTarget: '10–12', rest: '90s' },
+      { name: 'Weighted Pull-Up', sets: 3, repsTarget: '6–8', rest: '90s' },
+      { name: 'DB Lateral Raise', sets: 3, repsTarget: '15', rest: '45s' },
+      { name: 'Band Face Pull', sets: 3, repsTarget: '15', rest: '45s' },
+      { name: 'KB Overhead Tricep Extension', sets: 3, repsTarget: '10–12', rest: '45s' },
+      { name: 'Barbell Bicep Curl', sets: 3, repsTarget: '12', rest: '45s' },
+    ],
+    cooldown: [
+      { name: 'Upper pump finisher: DB Lateral Raise / Band Face Pull / Close-Grip Push-Up', sets: 1, repsTarget: '2 rounds', rest: '30s rest between rounds' },
     ]
   },
   C: {
-    name: 'Legs & Core',
+    name: 'GYM C — FULL BODY + CONDITIONING',
+    warmup: [
+      { name: 'Row + air bike alternating', sets: 1, repsTarget: '5 min total', rest: '—' },
+      { name: 'Inchworm walk-out', sets: 1, repsTarget: '5 reps', rest: '—' },
+      { name: "World's greatest stretch — each side", sets: 1, repsTarget: '5 reps', rest: '—' },
+      { name: 'Box step-up — bodyweight, light pace', sets: 1, repsTarget: '10 reps each side', rest: '—' },
+    ],
     exercises: [
-      { name: 'Squat (Back)', sets: 4, repsTarget: '8–10', rest: '120s' },
-      { name: 'Romanian Deadlift', sets: 4, repsTarget: '10–12', rest: '90s' },
-      { name: 'Leg Press', sets: 3, repsTarget: '12–15', rest: '90s' },
-      { name: 'Leg Curl', sets: 3, repsTarget: '12–15', rest: '60s' },
-      { name: 'Calf Raise', sets: 4, repsTarget: '15–20', rest: '45s' },
-      { name: 'Plank', sets: 3, repsTarget: '60s hold', rest: '45s' },
-      { name: 'Ab Wheel / Rollout', sets: 3, repsTarget: '10–12', rest: '45s' },
+      { name: 'Barbell Deadlift', sets: 4, repsTarget: '8–10', rest: '120s' },
+      { name: 'Push Press', sets: 4, repsTarget: '8–10', rest: '90s' },
+      { name: 'Kettlebell Swing', sets: 4, repsTarget: '15', rest: '60s' },
+      { name: 'Wall Ball', sets: 3, repsTarget: '15', rest: '60s' },
+      { name: 'Battle Ropes', sets: 3, repsTarget: '30s', rest: '90s' },
+      { name: 'Box Jump', sets: 3, repsTarget: '8', rest: '90s' },
+      { name: 'TRX Row', sets: 3, repsTarget: '12', rest: '60s' },
+      { name: 'KB Turkish Get-Up', sets: 2, repsTarget: '3 per side', rest: '75s' },
+    ],
+    cooldown: [
+      { name: 'Conditioning AMRAP: KB Swing / Box Jump / Push-Up', sets: 1, repsTarget: '5 min', rest: '—' },
     ]
   }
 };
@@ -1119,7 +1207,7 @@ let state = {
   gymSessions: {}, // { id: { split, date, exercises: [{name,sets:[{reps,weight}]}, notes] } }
   gymSessionCounter: 0,
   currentGymSession: null,
-  weightData: { p1: [], p2: [] },
+  weightData: { p1: [] },
   currentWeightPerson: 'p1',
 };
 
@@ -1132,6 +1220,15 @@ function load() {
 
 function save() {
   localStorage.setItem('trainingTracker_v3', JSON.stringify(state));
+}
+
+function getDefaultReps(repsTarget) {
+  if (!repsTarget) return '';
+  const target = repsTarget.replace('–', '-').trim();
+  const match = target.match(/^(\d+)/);
+  if (match) return match[1];
+  const secMatch = target.match(/(\d+)\s*s/);
+  return secMatch ? secMatch[1] : '';
 }
 
 // ═══════════════════════════════════════════════════
@@ -1363,11 +1460,46 @@ function loadGymSession() {
   renderSessionChips();
 }
 
+function getLastGymSession(split, excludeId) {
+  const sessions = Object.entries(state.gymSessions)
+    .filter(([sid, sess]) => sess.split === split && sid !== String(excludeId))
+    .sort((a, b) => {
+      const aDate = a[1].date || '';
+      const bDate = b[1].date || '';
+      if (aDate && bDate) return bDate.localeCompare(aDate);
+      return Number(b[0]) - Number(a[0]);
+    });
+  return sessions.length ? sessions[0][1] : null;
+}
+
 function renderGymSession(id) {
   const s = state.gymSessions[id];
   if (!s) return;
   const split = GYM_SPLITS[s.split];
+  const lastSession = getLastGymSession(s.split, id);
   const container = document.getElementById('gymContent');
+  const warmupHtml = (split.warmup || []).map(ex => `
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;padding:12px 14px;background:var(--surface2);border:1px solid var(--border);border-radius:10px;">
+          <div>
+            <div class="ex-name">${ex.name}</div>
+            <div class="ex-target">${ex.repsTarget} · ${ex.rest}</div>
+          </div>
+          <div style="font-family:'DM Mono',monospace;font-size:0.75rem;color:var(--text-dim);">${ex.sets} set${ex.sets === 1 ? '' : 's'}</div>
+        </div>
+      `).join('');
+  const cooldownHtml = (split.cooldown || []).map(ex => `
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;padding:12px 14px;background:var(--surface2);border:1px solid var(--border);border-radius:10px;">
+          <div>
+            <div class="ex-name">${ex.name}</div>
+            <div class="ex-target">${ex.repsTarget} · ${ex.rest}</div>
+          </div>
+          <div style="font-family:'DM Mono',monospace;font-size:0.75rem;color:var(--text-dim);">${ex.sets} set${ex.sets === 1 ? '' : 's'}</div>
+        </div>
+      `).join('');
+
+  const lastSummary = lastSession
+    ? `Last ${split.name} session: ${lastSession.date || 'previous saved session'}`
+    : 'No previous session history yet.';
 
   container.innerHTML = `
     <div class="card">
@@ -1378,6 +1510,11 @@ function renderGymSession(id) {
           <div style="font-family:'DM Mono',monospace;font-size:0.68rem;color:var(--text-dim);">SESSION #${id} · ${s.date || '—'}</div>
         </div>
       </div>
+
+      <div class="history-summary">${lastSummary}</div>
+
+      <div class="section-label"><span class="dot dot-gym"></span> WARM-UP</div>
+      <div style="display:grid;gap:10px;margin-bottom:16px;">${warmupHtml}</div>
 
       <table class="gym-table" id="gymExTable">
         <thead>
@@ -1392,6 +1529,9 @@ function renderGymSession(id) {
         <tbody id="gymExBody"></tbody>
       </table>
 
+      <div class="section-label" style="margin-top:20px;"><span class="dot dot-gym"></span> COOL-DOWN</div>
+      <div style="display:grid;gap:10px;margin-top:10px;">${cooldownHtml}</div>
+
       <div class="divider"></div>
       <div style="font-family:'DM Mono',monospace;font-size:0.65rem;color:var(--text-dim);margin-bottom:8px;letter-spacing:1px;">SESSION NOTES</div>
       <textarea id="gymSessionNotes" placeholder="How did it feel? PBs? Injuries?">${s.notes || ''}</textarea>
@@ -1400,21 +1540,26 @@ function renderGymSession(id) {
   const tbody = document.getElementById('gymExBody');
   split.exercises.forEach((ex, ei) => {
     const saved = s.exercises?.[ei] || { sets: [] };
+    const prevSets = lastSession?.exercises?.[ei]?.sets || [];
+    const prevText = prevSets.filter(v => v.reps !== undefined && v.reps !== '' && (v.weight !== undefined && v.weight !== '')).map(v => `${v.weight || 'BW'}kg × ${v.reps}`).join(' · ') || 'No previous data';
+
     const tr = document.createElement('tr');
+    tr.className = 'exercise-row';
+    tr.dataset.exIndex = ei;
 
     let setsHTML = '';
     for (let si = 0; si < ex.sets; si++) {
       const sv = saved.sets?.[si] || {};
+      const repsValue = sv.reps !== undefined && sv.reps !== '' ? sv.reps : getDefaultReps(ex.repsTarget);
       setsHTML += `
         <td>
           <div class="set-input-group">
             <div class="set-label">S${si+1}</div>
-            <input type="number" class="set-input" placeholder="reps" value="${sv.reps || ''}" min="0" max="50" />
+            <input type="number" class="set-input" placeholder="reps" value="${repsValue}" min="0" max="50" />
             <input type="number" class="weight-input" placeholder="kg" value="${sv.weight || ''}" step="0.5" min="0" max="500" />
           </div>
         </td>`;
     }
-    // Pad to 4 columns
     for (let si = ex.sets; si < 4; si++) {
       setsHTML += `<td style="color:var(--border);font-size:0.65rem;text-align:center;">—</td>`;
     }
@@ -1426,6 +1571,17 @@ function renderGymSession(id) {
       ${setsHTML}
       <td><input type="text" placeholder="notes" value="${saved.notes || ''}" style="width:100px;" /></td>`;
     tbody.appendChild(tr);
+
+    const historyRow = document.createElement('tr');
+    historyRow.className = 'history-row';
+    historyRow.innerHTML = `
+      <td colspan="8">
+        <div class="history-row-content">
+          <span class="history-label">Last:</span>
+          <span class="history-values">${prevText}</span>
+        </div>
+      </td>`;
+    tbody.appendChild(historyRow);
   });
 }
 
@@ -1434,7 +1590,7 @@ function saveGymSession() {
   if (!id || !state.gymSessions[id]) { toast('No session selected', 'gym'); return; }
   const s = state.gymSessions[id];
   const split = GYM_SPLITS[s.split];
-  const rows = document.querySelectorAll('#gymExBody tr');
+  const rows = document.querySelectorAll('#gymExBody tr.exercise-row');
   const exercises = [];
 
   rows.forEach((tr, ei) => {
@@ -1496,17 +1652,18 @@ function deleteGymSession() {
 // ═══════════════════════════════════════════════════
 function switchWeightPerson(p) {
   state.currentWeightPerson = p;
-  document.getElementById('wTabP1').style.borderColor = p === 'p1' ? 'var(--accent-run)' : 'var(--border)';
-  document.getElementById('wTabP1').style.color = p === 'p1' ? 'var(--accent-run)' : 'var(--text-mid)';
-  document.getElementById('wTabP2').style.borderColor = p === 'p2' ? 'var(--accent-run)' : 'var(--border)';
-  document.getElementById('wTabP2').style.color = p === 'p2' ? 'var(--accent-run)' : 'var(--text-mid)';
+  const btn = document.getElementById('wTabP1');
+  if (btn) {
+    btn.style.borderColor = p === 'p1' ? 'var(--accent-run)' : 'var(--border)';
+    btn.style.color = p === 'p1' ? 'var(--accent-run)' : 'var(--text-mid)';
+  }
   renderWeightPanel();
 }
 
 function addWeightEntry() {
   const date = document.getElementById('weightDate').value;
   const weight = parseFloat(document.getElementById('weightInput').value);
-  const person = document.getElementById('weightPerson').value;
+  const person = 'p1';
   if (!date || isNaN(weight)) { toast('Enter a valid date and weight', 'run'); return; }
 
   if (!state.weightData[person]) state.weightData[person] = [];
@@ -1516,17 +1673,19 @@ function addWeightEntry() {
   state.weightData[person].sort((a,b) => b.date.localeCompare(a.date));
   save();
   document.getElementById('weightInput').value = '';
-  switchWeightPerson(person);
+  renderWeightPanel();
   toast('Weight logged!', 'run');
 }
 
 function renderWeightPanel() {
-  const p = state.currentWeightPerson;
-  const entries = state.weightData[p] || [];
+  const entries = state.weightData.p1 || [];
   const container = document.getElementById('weightEntries');
+  const chart = document.getElementById('weightChart');
   container.innerHTML = '';
+  chart.innerHTML = '';
 
   if (entries.length === 0) {
+    chart.innerHTML = '<div style="color:var(--text-dim);font-family:\'DM Mono\',monospace;font-size:0.75rem;padding:16px 0;">No chart data</div>';
     container.innerHTML = '<div style="color:var(--text-dim);font-family:\'DM Mono\',monospace;font-size:0.75rem;padding:16px 0;">No entries yet</div>';
     document.getElementById('w-current').textContent = '—';
     document.getElementById('w-start').textContent = '—';
@@ -1534,6 +1693,8 @@ function renderWeightPanel() {
     document.getElementById('w-entries').textContent = '0';
     return;
   }
+
+  renderWeightChart(entries);
 
   document.getElementById('w-current').textContent = entries[0].weight.toFixed(1);
   document.getElementById('w-start').textContent = entries[entries.length - 1].weight.toFixed(1);
@@ -1554,9 +1715,54 @@ function renderWeightPanel() {
       <div class="weight-date">${dateStr}</div>
       <div class="weight-val">${e.weight.toFixed(1)}<span style="font-family:'DM Sans',sans-serif;font-size:0.7rem;color:var(--text-dim);margin-left:2px;">kg</span></div>
       ${delta !== null ? `<div class="weight-change ${delta > 0 ? 'wc-up' : 'wc-down'}">${delta > 0 ? '+' : ''}${delta.toFixed(1)}</div>` : ''}
-      <button onclick="deleteWeight('${p}','${e.date}')" class="btn btn-danger" style="padding:4px 10px;font-size:0.6rem;margin-left:auto;">✕</button>`;
+      <button onclick="deleteWeight('p1','${e.date}')" class="btn btn-danger" style="padding:4px 10px;font-size:0.6rem;margin-left:auto;">✕</button>`;
     container.appendChild(row);
   });
+}
+
+function renderWeightChart(entries) {
+  const chart = document.getElementById('weightChart');
+  const sorted = [...entries].slice().sort((a, b) => a.date.localeCompare(b.date));
+  const weights = sorted.map(e => e.weight);
+  const minWeight = Math.min(...weights);
+  const maxWeight = Math.max(...weights);
+  const range = maxWeight - minWeight || 1;
+  const width = 600;
+  const height = 150;
+  const margin = {top: 14, right: 24, bottom: 28, left: 44};
+  const plotWidth = width - margin.left - margin.right;
+  const plotHeight = height - margin.top - margin.bottom;
+
+  const points = sorted.map((e, index) => {
+    const x = margin.left + (sorted.length === 1 ? plotWidth / 2 : (plotWidth * index) / (sorted.length - 1));
+    const y = margin.top + ((maxWeight - e.weight) / range) * plotHeight;
+    return { x, y, weight: e.weight, date: e.date };
+  });
+
+  const linePath = points.map((p, idx) => `${idx === 0 ? 'M' : 'L'} ${p.x.toFixed(1)} ${p.y.toFixed(1)}`).join(' ');
+  const areaPath = `${linePath} L ${points[points.length - 1].x.toFixed(1)} ${height - margin.bottom} L ${points[0].x.toFixed(1)} ${height - margin.bottom} Z`;
+
+  const yTicks = [maxWeight, minWeight].map((value, index) => {
+    const y = margin.top + ((maxWeight - value) / range) * plotHeight;
+    return `<text x="8" y="${y + 4}" class="weight-chart-label">${value.toFixed(1)}kg</text>`;
+  }).join('');
+
+  const xLabels = sorted.map((e, index) => {
+    if (sorted.length > 6 && index % Math.ceil(sorted.length / 6) !== 0 && index !== sorted.length - 1) return '';
+    const x = margin.left + (sorted.length === 1 ? plotWidth / 2 : (plotWidth * index) / (sorted.length - 1));
+    const label = new Date(e.date + 'T12:00:00').toLocaleDateString('en-NZ', {day:'2-digit',month:'short'});
+    return `<text x="${x}" y="${height - 6}" text-anchor="middle" class="weight-chart-label">${label}</text>`;
+  }).join('');
+
+  chart.innerHTML = `
+    <svg viewBox="0 0 ${width} ${height}" preserveAspectRatio="none">
+      <path d="M ${margin.left} ${margin.top} H ${width - margin.right}" stroke="rgba(156,163,175,0.24)" stroke-width="1" fill="none" />
+      ${yTicks}
+      ${xLabels}
+      <path class="weight-chart-area" d="${areaPath}" />
+      <path class="weight-chart-line" d="${linePath}" />
+      ${points.map(p => `<circle class="weight-chart-dot" cx="${p.x.toFixed(1)}" cy="${p.y.toFixed(1)}" r="4" />`).join('')}
+    </svg>`;
 }
 
 function deleteWeight(person, date) {
@@ -1581,12 +1787,12 @@ function getSessionForDow(dow, weekIdx) {
   if (!plan) return null;
   const [wk, phase, tue, thu, sun] = plan;
   const sessions = [
-    { type: 'gym-a', label: 'Gym A · Push', detail: 'Chest / Shoulders / Triceps' },
+    { type: 'gym-a', label: 'Gym A · Lower', detail: 'Lower Body + Core' },
     { type: 'run-easy', label: `Easy ${tue.toFixed(1)}km`, detail: `Target: ${tue.toFixed(1)} km` },
-    { type: 'gym-b', label: 'Gym B · Pull', detail: 'Back / Biceps / Rear Delt' },
+    { type: 'gym-b', label: 'Gym B · Upper', detail: 'Upper Push + Pull' },
     { type: 'run-tempo', label: `Tempo ${thu.toFixed(1)}km`, detail: `Target: ${thu.toFixed(1)} km` },
     { type: 'rest', label: 'Rest', detail: 'Active recovery / mobility' },
-    { type: 'gym-c', label: 'Gym C · Legs', detail: 'Legs & Core' },
+    { type: 'gym-c', label: 'Gym C · Full', detail: 'Full Body + Conditioning' },
     { type: 'run-long', label: `Long ${sun.toFixed(1)}km`, detail: `Target: ${sun.toFixed(1)} km` },
   ];
   // Week 26 Sunday = race day
