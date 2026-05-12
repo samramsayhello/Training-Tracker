@@ -170,6 +170,344 @@
     border-color: var(--accent-gym);
   }
 
+  .session-controls {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    align-items: center;
+    margin-bottom: 16px;
+  }
+
+  .session-pill {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    font-size: 0.72rem;
+    color: var(--text-dim);
+    min-width: 160px;
+  }
+
+  .session-pill label {
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-family: 'DM Mono', monospace;
+  }
+
+  .session-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .session-chip {
+    padding: 10px 12px;
+    border-radius: 10px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    color: var(--text);
+    cursor: pointer;
+    font-size: 0.82rem;
+    transition: border-color 0.2s, background 0.2s;
+  }
+
+  .session-chip.active {
+    background: rgba(255,107,53,0.12);
+    border-color: var(--accent-gym);
+  }
+
+  .gym-session-header {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 14px;
+  }
+
+  .gym-session-title {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .gym-session-title h2 {
+    font-size: 1rem;
+    font-weight: 700;
+    margin: 0;
+  }
+
+  .gym-session-meta {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.75rem;
+    color: var(--text-dim);
+  }
+
+  .aux-card, .exercise-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+    margin-bottom: 12px;
+  }
+
+  .aux-header, .ex-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 14px;
+    cursor: pointer;
+    user-select: none;
+  }
+
+  .aux-header:hover, .ex-header:hover {
+    background: var(--surface2);
+  }
+
+  .aux-icon {
+    font-size: 18px;
+    flex-shrink: 0;
+  }
+
+  .aux-title, .ex-name-wrap {
+    flex: 1;
+  }
+
+  .aux-title .name, .ex-name {
+    font-weight: 700;
+    font-size: 0.95rem;
+    margin-bottom: 3px;
+  }
+
+  .aux-title .sub, .ex-note-text {
+    font-size: 0.82rem;
+    color: var(--text-dim);
+  }
+
+  .aux-chevron, .ex-chevron {
+    color: var(--text-dim);
+    font-size: 11px;
+    transition: transform 0.2s;
+  }
+
+  .aux-card.open .aux-chevron,
+  .exercise-card.open .ex-chevron {
+    transform: rotate(180deg);
+  }
+
+  .aux-body, .ex-body {
+    display: none;
+    padding: 0 14px 14px;
+    border-top: 1px solid var(--border);
+  }
+
+  .aux-card.open .aux-body,
+  .exercise-card.open .ex-body {
+    display: block;
+  }
+
+  .aux-note {
+    font-size: 12px;
+    color: var(--text-dim);
+    margin-bottom: 10px;
+  }
+
+  .aux-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 9px 0;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .aux-item:last-child {
+    border-bottom: none;
+  }
+
+  .aux-check {
+    width: 20px;
+    height: 20px;
+    border-radius: 6px;
+    border: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--accent-gym);
+    font-size: 12px;
+    flex-shrink: 0;
+  }
+
+  .aux-item-text {
+    font-size: 0.9rem;
+  }
+
+  .aux-item-detail {
+    font-size: 0.78rem;
+    color: var(--text-dim);
+    margin-top: 2px;
+  }
+
+  .set-row {
+    display: grid;
+    grid-template-columns: 34px 1fr 1fr auto;
+    gap: 8px;
+    align-items: center;
+    margin-bottom: 8px;
+  }
+
+  .set-num {
+    width: 28px;
+    min-height: 28px;
+    border-radius: 8px;
+    background: var(--surface2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.8rem;
+    color: var(--text-dim);
+    font-weight: 700;
+  }
+
+  .si {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    color: var(--text);
+    font-family: 'DM Mono', monospace;
+    font-size: 0.92rem;
+    padding: 8px 10px;
+    outline: none;
+    width: 100%;
+  }
+
+  .si.done {
+    border-color: var(--accent-gym);
+    color: var(--accent-gym);
+  }
+
+  .set-del {
+    background: transparent;
+    border: none;
+    color: var(--text-dim);
+    font-size: 20px;
+    line-height: 1;
+    cursor: pointer;
+    padding: 0;
+  }
+
+  .set-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-top: 8px;
+  }
+
+  .btn-ghost {
+    background: var(--surface2);
+    color: var(--text);
+    border: 1px solid var(--border);
+  }
+
+  .btn-rest {
+    background: rgba(255,107,53,0.12);
+    color: var(--accent-gym);
+    border: 1px solid rgba(255,107,53,0.2);
+  }
+
+  .prev-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 10px;
+    padding: 10px 12px;
+    background: var(--surface2);
+    border-radius: 10px;
+    font-size: 0.82rem;
+  }
+
+  .prev-label {
+    color: var(--text-dim);
+    font-weight: 700;
+  }
+
+  .prev-sets {
+    color: var(--accent-gym);
+    font-weight: 700;
+  }
+
+  .presc-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 5px 10px;
+    border-radius: 999px;
+    background: var(--surface2);
+    color: var(--text-dim);
+    font-size: 0.72rem;
+    font-weight: 700;
+  }
+
+  .orm-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-top: 10px;
+    padding: 10px 12px;
+    background: rgba(255,107,53,0.08);
+    border: 1px solid rgba(255,107,53,0.16);
+    border-radius: 10px;
+  }
+
+  .orm-label {
+    font-size: 0.8rem;
+    color: var(--text-dim);
+  }
+
+  .orm-current {
+    font-size: 1rem;
+    font-weight: 800;
+    color: var(--accent-gym);
+  }
+
+  .orm-pr {
+    font-size: 0.78rem;
+    color: var(--text-dim);
+  }
+
+  textarea.session-notes {
+    width: 100%;
+    min-height: 120px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    color: var(--text);
+    padding: 12px;
+    font-family: 'DM Sans', sans-serif;
+    resize: vertical;
+    font-size: 0.9rem;
+  }
+
+  .rest-pill {
+    position: fixed;
+    bottom: 80px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 1000;
+    display: none;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 18px;
+    background: var(--surface);
+    border: 1px solid rgba(255,107,53,0.25);
+    border-radius: 999px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.25);
+    font-size: 0.95rem;
+  }
+
+  .rest-pill.show {
+    display: flex;
+  }
+
   /* RUN SESSIONS TABLE */
   .run-table {
     width: 100%;
@@ -222,6 +560,17 @@
     color: var(--text-mid);
     font-size: 0.78rem;
     min-width: 40px;
+  }
+
+  .run-note-card {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 14px 16px;
+    margin-bottom: 18px;
+    color: var(--text-mid);
+    font-size: 0.9rem;
+    line-height: 1.5;
   }
 
   /* PROGRESS BAR */
@@ -906,6 +1255,8 @@
     <button class="btn btn-run" onclick="saveRunWeek()" style="margin-left:auto;">SAVE WEEK</button>
   </div>
 
+  <div id="runWeekNote" class="run-note-card">Select a week to view the coach’s note for this run block.</div>
+
   <div class="card" id="runCard">
     <div class="section-label"><span class="dot dot-run"></span> WEEKLY SESSIONS</div>
     <table class="run-table" id="runTable">
@@ -1099,102 +1450,313 @@
 // DATA — 26-week run programme
 // ═══════════════════════════════════════════════════
 const RUN_PLAN = [
-  // wk, phase, tue, thu, sun
-  [1,'Base Build',3.0,3.0,5.0],
-  [2,'Base Build',3.5,3.5,6.0],
-  [3,'Base Build',4.0,4.0,7.0],
-  [4,'Recovery',3.0,3.0,5.5],
-  [5,'Base Build',4.5,4.5,8.0],
-  [6,'Base Build',5.0,5.0,9.0],
-  [7,'Base Build',5.0,5.0,10.0],
-  [8,'Recovery',4.0,4.0,8.0],
-  [9,'Build',5.5,5.5,11.0],
-  [10,'Build',6.0,6.0,12.0],
-  [11,'Build',6.0,6.0,13.0],
-  [12,'Recovery',5.0,5.0,10.0],
-  [13,'Build',6.5,6.5,14.0],
-  [14,'Build',7.0,7.0,15.0],
-  [15,'Build',7.0,7.0,16.0],
-  [16,'Recovery',5.5,5.5,12.0],
-  [17,'Peak',7.5,7.5,17.0],
-  [18,'Peak',8.0,8.0,18.0],
-  [19,'Peak',8.0,8.0,19.0],
-  [20,'Recovery',6.0,6.0,14.0],
-  [21,'Peak',8.5,8.5,20.0],
-  [22,'Peak',8.0,8.0,21.1],
-  [23,'Taper',7.0,7.0,18.0],
-  [24,'Taper',6.0,6.0,15.0],
-  [25,'Taper',4.0,4.0,10.0],
-  [26,'Race Week',3.0,2.0,21.1],
+  { w:1, phase:'Base Build',
+    tue:{type:'easy', dist:2.5, pace:'6:45–7:15/km', notes:'2 min run : 1 min walk. Land midfoot. No heel striking.'},
+    thu:{type:'easy', dist:2.5, pace:'6:45–7:15/km', notes:'2 min run : 1 min walk. Ankle circles before.'},
+    sun:{type:'long', dist:3, pace:'7:00–7:30/km', notes:'Walk last 5 min. Ice knees if sore after.'}
+  },
+  { w:2, phase:'Base Build',
+    tue:{type:'easy', dist:3, pace:'6:30–7:00/km', notes:'3 min run : 1 min walk.'},
+    thu:{type:'easy', dist:3, pace:'6:30–7:00/km', notes:'3 min run : 1 min walk.'},
+    sun:{type:'long', dist:3.5, pace:'7:00–7:15/km', notes:'Check for ankle soreness next morning.'}
+  },
+  { w:3, phase:'Base Build',
+    tue:{type:'easy', dist:3, pace:'6:30–7:00/km', notes:'4 min run : 1 min walk. Knees over toes.'},
+    thu:{type:'easy', dist:3.5, pace:'6:30–7:00/km', notes:'4 min run : 1 min walk.'},
+    sun:{type:'long', dist:4.5, pace:'7:00–7:15/km', notes:'Walk if sharp pain. Ache is ok, sharp is not.'}
+  },
+  { w:4, phase:'Recovery',
+    tue:{type:'easy', dist:3, pace:'6:30–7:00/km', notes:'5 min run : 1 min walk.'},
+    thu:{type:'easy', dist:3, pace:'6:30–7:00/km', notes:'5 min run : 1 min walk. Reduce walk to 45s if good.'},
+    sun:{type:'long', dist:4, pace:'7:00–7:15/km', notes:'Calf tightness = stop and stretch immediately.'}
+  },
+  { w:5, phase:'Base Build',
+    tue:{type:'easy', dist:3.5, pace:'6:20–6:50/km', notes:'7 min run : 1 min walk. Should feel like you COULD go faster. Don\'t.'},
+    thu:{type:'easy', dist:3.5, pace:'6:20–6:50/km', notes:'7 min run : 1 min walk.'},
+    sun:{type:'long', dist:5.5, pace:'6:50–7:15/km', notes:'Try to finish without a walk break.'}
+  },
+  { w:6, phase:'Base Build',
+    tue:{type:'easy', dist:4, pace:'6:15–6:45/km', notes:'First continuous run. Go deliberately slow.'},
+    thu:{type:'easy', dist:4, pace:'6:15–6:45/km', notes:'Continuous (walk only if needed).'},
+    sun:{type:'long', dist:6, pace:'6:45–7:10/km', notes:'✅ Phase 1 complete. Log your time.'}
+  },
+  { w:7, phase:'Base Build',
+    tue:{type:'easy', dist:4, pace:'6:15–6:45/km', notes:'First all-continuous week. Celebrate. Go slow.'},
+    thu:{type:'tempo', dist:4, pace:'5:45–6:10/km', notes:'First all-continuous week. Celebrate. Go slow.'},
+    sun:{type:'long', dist:7, pace:'6:45–7:10/km', notes:'First all-continuous week. Celebrate. Go slow.'}
+  },
+  { w:8, phase:'Recovery',
+    tue:{type:'easy', dist:4.5, pace:'6:10–6:40/km', notes:'Increase long run only. Shorter runs same pace.'},
+    thu:{type:'tempo', dist:4, pace:'5:40–6:05/km', notes:'Increase long run only. Shorter runs same pace.'},
+    sun:{type:'long', dist:8, pace:'6:40–7:05/km', notes:'Increase long run only. Shorter runs same pace.'}
+  },
+  { w:9, phase:'Build',
+    tue:{type:'easy', dist:4.5, pace:'6:10–6:40/km', notes:'Body adapting. Fitness building underneath.'},
+    thu:{type:'tempo', dist:5, pace:'5:40–6:00/km', notes:'Body adapting. Fitness building underneath.'},
+    sun:{type:'long', dist:9, pace:'6:40–7:05/km', notes:'Body adapting. Fitness building underneath.'}
+  },
+  { w:10, phase:'Build',
+    tue:{type:'easy', dist:4.5, pace:'6:10–6:40/km', notes:'Carry water on runs 8km+.'},
+    thu:{type:'easy', dist:4, pace:'6:20–6:50/km', notes:'Carry water on runs 8km+.'},
+    sun:{type:'long', dist:8, pace:'6:40–7:05/km', notes:'Carry water on runs 8km+.'}
+  },
+  { w:11, phase:'Build',
+    tue:{type:'easy', dist:5, pace:'6:05–6:35/km', notes:'10km MILESTONE. Banana pre-long run from here.'},
+    thu:{type:'tempo', dist:5, pace:'5:35–5:55/km', notes:'10km MILESTONE. Banana pre-long run from here.'},
+    sun:{type:'long', dist:10, pace:'6:35–7:00/km', notes:'10km MILESTONE. Banana pre-long run from here.'}
+  },
+  { w:12, phase:'Recovery',
+    tue:{type:'easy', dist:5, pace:'6:05–6:35/km', notes:'Eat banana + water before long runs.'},
+    thu:{type:'tempo', dist:5, pace:'5:30–5:50/km', notes:'Eat banana + water before long runs.'},
+    sun:{type:'long', dist:11, pace:'6:30–6:55/km', notes:'Eat banana + water before long runs.'}
+  },
+  { w:13, phase:'Build',
+    tue:{type:'easy', dist:6, pace:'6:00–6:30/km', notes:'Check shoe wear at 12 weeks.'},
+    thu:{type:'tempo', dist:5.5, pace:'5:25–5:45/km', notes:'Check shoe wear at 12 weeks.'},
+    sun:{type:'long', dist:12, pace:'6:25–6:55/km', notes:'Check shoe wear at 12 weeks.'}
+  },
+  { w:14, phase:'Build',
+    tue:{type:'easy', dist:6, pace:'6:00–6:30/km', notes:'Halfway to HM distance. Huge milestone.'},
+    thu:{type:'tempo', dist:6, pace:'5:20–5:45/km', notes:'Halfway to HM distance. Huge milestone.'},
+    sun:{type:'long', dist:13, pace:'6:20–6:50/km', notes:'Halfway to HM distance. Huge milestone.'}
+  },
+  { w:15, phase:'Build',
+    tue:{type:'easy', dist:6, pace:'6:00–6:30/km', notes:'14km = well on track for race day.'},
+    thu:{type:'intervals', dist:5, pace:'4:55–5:10/km (reps)', notes:'14km = well on track for race day.'},
+    sun:{type:'long', dist:14, pace:'6:20–6:50/km', notes:'14km = well on track for race day.'}
+  },
+  { w:16, phase:'Recovery',
+    tue:{type:'easy', dist:6, pace:'6:00–6:30/km', notes:'DELOAD. Pull back 30%. Light gym only.'},
+    thu:{type:'intervals', dist:5, pace:'4:55–5:10/km (reps)', notes:'DELOAD. Pull back 30%. Light gym only.'},
+    sun:{type:'long', dist:15, pace:'6:20–6:50/km', notes:'Carb load night before. Eat oats 60 min pre-run.'}
+  },
+  { w:17, phase:'Peak',
+    tue:{type:'easy', dist:6, pace:'5:55–6:25/km', notes:'Carb load night before. Eat oats 60 min pre-run.'},
+    thu:{type:'intervals', dist:6, pace:'4:50–5:05/km (reps)', notes:'Carb load night before. Eat oats 60 min pre-run.'},
+    sun:{type:'long', dist:16, pace:'6:15–6:45/km', notes:'Practice race nutrition. Banana or gel at 10km.'}
+  },
+  { w:18, phase:'Peak',
+    tue:{type:'easy', dist:5, pace:'6:00–6:30/km', notes:'Practice race nutrition. Banana or gel at 10km.'},
+    thu:{type:'easy', dist:5, pace:'6:00–6:30/km', notes:'Practice race nutrition. Banana or gel at 10km.'},
+    sun:{type:'long', dist:14, pace:'6:20–6:50/km', notes:'17km = you WILL finish the race. Mental shift.'}
+  },
+  { w:19, phase:'Peak',
+    tue:{type:'easy', dist:7, pace:'5:55–6:20/km', notes:'17km = you WILL finish the race. Mental shift.'},
+    thu:{type:'intervals', dist:6, pace:'4:50–5:05/km (reps)', notes:'17km = you WILL finish the race. Mental shift.'},
+    sun:{type:'long', dist:17, pace:'6:10–6:40/km', notes:'Peak training week. Sleep 8hrs. No hero efforts.'}
+  },
+  { w:20, phase:'Recovery',
+    tue:{type:'easy', dist:7, pace:'5:55–6:20/km', notes:'Peak training week. Sleep 8hrs. No hero efforts.'},
+    thu:{type:'tempo', dist:7, pace:'5:20–5:40/km', notes:'Peak training week. Sleep 8hrs. No hero efforts.'},
+    sun:{type:'long', dist:18, pace:'6:10–6:40/km', notes:'DELOAD. Trust the process. Body rebuilding.'}
+  },
+  { w:21, phase:'Peak',
+    tue:{type:'easy', dist:6, pace:'5:55–6:20/km', notes:'DELOAD. Trust the process. Body rebuilding.'},
+    thu:{type:'race', dist:6, pace:'6:30–6:50/km', notes:'Practise your exact race day food plan.'},
+    sun:{type:'long', dist:19, pace:'6:10–6:40/km', notes:'Practise your exact race day food plan.'}
+  },
+  { w:22, phase:'Peak',
+    tue:{type:'easy', dist:6, pace:'5:55–6:20/km', notes:'Practise your exact race day food plan.'},
+    thu:{type:'race', dist:6, pace:'6:25–6:45/km', notes:'PEAK LONG RUN. After this: you CAN do 21.1km.'},
+    sun:{type:'long', dist:20, pace:'6:10–6:40/km', notes:'PEAK LONG RUN. After this: you CAN do 21.1km.'}
+  },
+  { w:23, phase:'Taper',
+    tue:{type:'easy', dist:5, pace:'5:55–6:20/km', notes:'PEAK LONG RUN. After this: you CAN do 21.1km.'},
+    thu:{type:'race', dist:5, pace:'6:25–6:45/km', notes:'TAPER 1. Volume -20%. No new exercises.'},
+    sun:{type:'long', dist:16, pace:'6:15–6:45/km', notes:'TAPER 1. Volume -20%. No new exercises.'}
+  },
+  { w:24, phase:'Taper',
+    tue:{type:'easy', dist:4, pace:'5:55–6:20/km', notes:'TAPER 2. Feel restless = correct. Stay off your feet.'},
+    thu:{type:'race', dist:4, pace:'6:25–6:45/km', notes:'TAPER 2. Feel restless = correct. Stay off your feet.'},
+    sun:{type:'long', dist:12, pace:'6:15–6:45/km', notes:'Mon REST. Tue 3km. Wed-Fri REST. SAT RACE DAY!'}
+  },
+  { w:25, phase:'Taper',
+    tue:{type:'easy', dist:3, pace:'6:00–6:20/km', notes:'Race week. Very easy — just stay loose. No effort whatsoever.'},
+    thu:{type:'race', dist:3, pace:'6:25–6:45/km', notes:'1km easy / 1km race pace / 1km easy. Just a reminder of what race pace feels like. Finished in 18 minutes.'},
+    sun:{type:'long', dist:6, pace:'6:20–6:45/km', notes:'Last proper run before race week. Easy all the way. Finish feeling like you could run another 6km easily.'}
+  },
+  { w:26, phase:'Race Week',
+    tue:{type:'shakeout', dist:2, pace:'6:00–6:30/km', notes:'Shakeout run. Very easy, very short. Just move the legs and get fresh air. Done in 13 minutes.'},
+    thu:{type:'rest', dist:0, pace:'', notes:'REST DAY. No running. Walk, stretch, eat well, sleep early. Save everything for Sunday.'},
+    sun:{type:'race-day', dist:21.1, pace:'Your pace 🎯', notes:'🏆 RACE DAY — Queenstown Half Marathon. All 26 weeks have led here. Trust your training, run your race.'}
+  }
+];
+
+const RUN_PLAN_DURATIONS = [
+  '20:00',
+  '22:00',
+  '25:00',
+  '22:00',
+  '25:00',
+  '28:00',
+  '25:00',
+  '28:00',
+  '32:00',
+  '28:00',
+  '30:00',
+  '35:00',
+  '30:00',
+  '32:00',
+  '38:00',
+  '32:00',
+  '30:00',
+  '38:00',
+  '21:00',
+  '21:00',
+  '36:00',
+  '25:00',
+  '25:00',
+  '42:00',
+  '28:00',
+  '28:00',
+  '48:00',
+  '32:00',
+  '32:00',
+  '54:00',
+  '36:00',
+  '36:00',
+  '60:00',
+  '39:00',
+  '39:00',
+  '66:00',
+  '43:00',
+  '43:00',
+  '72:00',
+  '46:00',
+  '46:00',
+  '78:00',
+  '50:00',
+  '50:00',
+  '84:00',
+  '36:00',
+  '60:00',
+  '54:00',
+  '54:00',
+  '90:00',
+  '57:00',
+  '57:00',
+  '96:00',
+  '61:00',
+  '61:00',
+  '102:00',
+  '64:00',
+  '64:00',
+  '108:00',
+  '43:00',
+  '72:00',
+  '68:00',
+  '68:00',
+  '114:00',
+  '72:00',
+  '72:00',
+  '120:00',
+  '57:00',
+  '96:00',
+  '36:00',
+  '60:00',
+  '118:00'
 ];
 
 // Gym split data imported from Queenstown HM v13 gym updated
 const GYM_SPLITS = {
   A: {
     name: 'GYM A — LOWER BODY + CORE',
-    warmup: [
-      { name: 'Air bike or easy row', sets: 1, repsTarget: '5 min', rest: '—' },
-      { name: 'Kneeling hip flexor stretch — each side', sets: 1, repsTarget: '45s × 2', rest: '—' },
-      { name: 'Glute bridge — slow and controlled', sets: 1, repsTarget: '2 × 10 reps', rest: '—' },
-      { name: 'Banded clamshell — each side', sets: 1, repsTarget: '2 × 15 reps', rest: '—' },
-    ],
+    warmup: {
+      note: '⚠ Min 8 min — knees and ankles must be warm before loading',
+      items: [
+        { text: 'Air bike or easy row — light pace', detail: '5 min' },
+        { text: 'Kneeling hip flexor stretch — each side', detail: '45s × 2' },
+        { text: 'Glute bridge — slow and controlled', detail: '2 × 10 reps' },
+        { text: 'Banded clamshell — each side', detail: '2 × 15 reps' },
+      ]
+    },
     exercises: [
-      { name: 'Barbell Back Squat', sets: 4, repsTarget: '10–12', rest: '90s' },
-      { name: 'Romanian Deadlift', sets: 3, repsTarget: '10–12', rest: '75s' },
-      { name: 'Barbell Hip Thrust', sets: 3, repsTarget: '12–15', rest: '60s' },
-      { name: 'KB Goblet Squat', sets: 3, repsTarget: '15', rest: '60s' },
-      { name: 'KB Walking Lunge', sets: 3, repsTarget: '10 per side', rest: '60s' },
-      { name: 'Hanging Leg Raise', sets: 3, repsTarget: '12–15', rest: '45s' },
-      { name: 'Plank', sets: 3, repsTarget: '45–60s', rest: '45s' },
-      { name: 'Dead Bug', sets: 3, repsTarget: '10 per side', rest: '45s' },
+      { name: 'Barbell Back Squat', note: 'Power rack · drive knees out over toes', sets: 4, repsTarget: '10–12', rest: '90s' },
+      { name: 'Romanian Deadlift', note: 'Barbell · hinge at hips, neutral spine', sets: 3, repsTarget: '10–12', rest: '75s' },
+      { name: 'Barbell Hip Thrust', note: 'Bench · full extension at top, chin tucked', sets: 3, repsTarget: '12–15', rest: '60s' },
+      { name: 'KB Goblet Squat', note: 'KB · heels elevated on plate if ankles are tight', sets: 3, repsTarget: '15', rest: '60s' },
+      { name: 'KB Walking Lunge', note: 'Reps per side · shorten stride if knees complain', sets: 3, repsTarget: '10 per side', rest: '60s' },
+      { name: 'Hanging Leg Raise', note: 'Bar or rack · controlled lower, no swing', sets: 3, repsTarget: '12–15', rest: '45s' },
+      { name: 'Plank', note: 'Enter seconds in reps field · dead-straight spine', sets: 3, repsTarget: '45–60s', rest: '45s' },
+      { name: 'Dead Bug', note: 'Reps per side · lower back pressed to floor', sets: 3, repsTarget: '10 per side', rest: '45s' },
     ],
-    cooldown: [
-      { name: 'Core cool-down circuit: Plank / Glute bridge hold / Hip flexor stretch', sets: 1, repsTarget: '3 rounds', rest: '30s rest between rounds' },
-    ]
+    finisher: {
+      name: 'Core Cool-Down Circuit',
+      icon: '🧘',
+      desc: '3 rounds, no rest between exercises. Controlled breathing.',
+      logLabel: 'Rounds completed',
+      items: [
+        { name: 'Plank hold', detail: '30s' },
+        { name: 'Glute bridge hold', detail: '30s' },
+        { name: 'Hip flexor stretch — each side', detail: '30s' },
+      ]
+    }
   },
   B: {
     name: 'GYM B — UPPER PUSH + PULL',
-    warmup: [
-      { name: 'Row or ski erg — easy pace', sets: 1, repsTarget: '5 min', rest: '—' },
-      { name: 'Band pull-apart', sets: 1, repsTarget: '2 × 20 reps', rest: '—' },
-      { name: 'Band external rotation — each side', sets: 1, repsTarget: '2 × 15 reps', rest: '—' },
-      { name: 'Shoulder circles and arm swings', sets: 1, repsTarget: '30s each', rest: '—' },
-    ],
+    warmup: {
+      note: 'Shoulder prep is non-negotiable — keep activation sets very light',
+      items: [
+        { text: 'Row or ski erg — easy pace', detail: '5 min' },
+        { text: 'Band pull-apart', detail: '2 × 20 reps' },
+        { text: 'Band external rotation — each side', detail: '2 × 15 reps' },
+        { text: 'Shoulder circles and arm swings', detail: '30s each' },
+      ]
+    },
     exercises: [
-      { name: 'Barbell Bench Press', sets: 4, repsTarget: '10–12', rest: '90s' },
-      { name: 'Barbell Overhead Press', sets: 4, repsTarget: '8–10', rest: '90s' },
-      { name: 'Barbell Row', sets: 4, repsTarget: '10–12', rest: '90s' },
-      { name: 'Weighted Pull-Up', sets: 3, repsTarget: '6–8', rest: '90s' },
-      { name: 'DB Lateral Raise', sets: 3, repsTarget: '15', rest: '45s' },
-      { name: 'Band Face Pull', sets: 3, repsTarget: '15', rest: '45s' },
-      { name: 'KB Overhead Tricep Extension', sets: 3, repsTarget: '10–12', rest: '45s' },
-      { name: 'Barbell Bicep Curl', sets: 3, repsTarget: '12', rest: '45s' },
+      { name: 'Barbell Bench Press', note: 'Power rack · feet flat, bar to lower chest', sets: 4, repsTarget: '10–12', rest: '90s' },
+      { name: 'Barbell Overhead Press', note: 'Standing · brace hard, bar to full lockout', sets: 4, repsTarget: '8–10', rest: '90s' },
+      { name: 'Barbell Row', note: 'Pronated grip · drive bar to lower chest', sets: 4, repsTarget: '10–12', rest: '90s' },
+      { name: 'Weighted Pull-Up', note: 'Enter added load only (not bodyweight)', sets: 3, repsTarget: '6–8', rest: '90s' },
+      { name: 'DB Lateral Raise', note: 'Max 10kg DB · slow 3s eccentric', sets: 3, repsTarget: '15', rest: '45s' },
+      { name: 'Band Face Pull', note: 'Resistance band · external rotation at end range', sets: 3, repsTarget: '15', rest: '45s' },
+      { name: 'KB Overhead Tricep Extension', note: 'Both hands · elbows stay forward, no flare', sets: 3, repsTarget: '10–12', rest: '45s' },
+      { name: 'Barbell Bicep Curl', note: 'Strict form · elbows pinned, no swing', sets: 3, repsTarget: '12', rest: '45s' },
     ],
-    cooldown: [
-      { name: 'Upper pump finisher: DB Lateral Raise / Band Face Pull / Close-Grip Push-Up', sets: 1, repsTarget: '2 rounds', rest: '30s rest between rounds' },
-    ]
+    finisher: {
+      name: 'Upper Pump Finisher',
+      icon: '🔥',
+      desc: '2 rounds, 30s rest between rounds only.',
+      logLabel: 'Rounds completed',
+      items: [
+        { name: 'DB Lateral Raise', detail: '15 reps · max 10kg' },
+        { name: 'Band Face Pull', detail: '15 reps' },
+        { name: 'Close-Grip Push-Up', detail: '10 reps' },
+      ]
+    }
   },
   C: {
     name: 'GYM C — FULL BODY + CONDITIONING',
-    warmup: [
-      { name: 'Row + air bike alternating', sets: 1, repsTarget: '5 min total', rest: '—' },
-      { name: 'Inchworm walk-out', sets: 1, repsTarget: '5 reps', rest: '—' },
-      { name: "World's greatest stretch — each side", sets: 1, repsTarget: '5 reps', rest: '—' },
-      { name: 'Box step-up — bodyweight, light pace', sets: 1, repsTarget: '10 reps each side', rest: '—' },
-    ],
+    warmup: {
+      note: 'Full body activation — heavier session, take the warm-up seriously',
+      items: [
+        { text: 'Row + air bike alternating', detail: '5 min total' },
+        { text: 'Inchworm walk-out', detail: '5 reps' },
+        { text: "World's greatest stretch — each side", detail: '5 reps' },
+        { text: 'Box step-up — bodyweight, light pace', detail: '10 reps each side' },
+      ]
+    },
     exercises: [
-      { name: 'Barbell Deadlift', sets: 4, repsTarget: '8–10', rest: '120s' },
-      { name: 'Push Press', sets: 4, repsTarget: '8–10', rest: '90s' },
-      { name: 'Kettlebell Swing', sets: 4, repsTarget: '15', rest: '60s' },
-      { name: 'Wall Ball', sets: 3, repsTarget: '15', rest: '60s' },
-      { name: 'Battle Ropes', sets: 3, repsTarget: '30s', rest: '90s' },
-      { name: 'Box Jump', sets: 3, repsTarget: '8', rest: '90s' },
-      { name: 'TRX Row', sets: 3, repsTarget: '12', rest: '60s' },
-      { name: 'KB Turkish Get-Up', sets: 2, repsTarget: '3 per side', rest: '75s' },
+      { name: 'Barbell Deadlift', note: 'Conventional · bar over mid-foot, neutral spine', sets: 4, repsTarget: '8–10', rest: '120s' },
+      { name: 'Push Press', note: 'Barbell · dip and drive from legs, lock out overhead', sets: 4, repsTarget: '8–10', rest: '90s' },
+      { name: 'Kettlebell Swing', note: 'Hip hinge — not a squat · snap hips, float at top', sets: 4, repsTarget: '15', rest: '60s' },
+      { name: 'Wall Ball', note: 'Enter ball weight in kg · aim for 10–20kg ball', sets: 3, repsTarget: '15', rest: '60s' },
+      { name: 'Battle Ropes', note: 'Enter seconds in reps field · alternate arms, stay low', sets: 3, repsTarget: '30s', rest: '90s' },
+      { name: 'Box Jump', note: 'Land soft with bent knees · step down, never jump down', sets: 3, repsTarget: '8', rest: '90s' },
+      { name: 'TRX Row', note: 'Bodyweight · feet forward = harder · body rigid', sets: 3, repsTarget: '12', rest: '60s' },
+      { name: 'KB Turkish Get-Up', note: 'Reps per side · go slow · eyes on the bell', sets: 2, repsTarget: '3 per side', rest: '75s' },
     ],
-    cooldown: [
-      { name: 'Conditioning AMRAP: KB Swing / Box Jump / Push-Up', sets: 1, repsTarget: '5 min', rest: '—' },
-    ]
+    finisher: {
+      name: 'Conditioning AMRAP',
+      icon: '⚡',
+      desc: '5 min AMRAP — record full rounds completed.',
+      logLabel: 'Rounds completed',
+      items: [
+        { name: 'KB Swing', detail: '10 reps' },
+        { name: 'Box Jump', detail: '5 reps' },
+        { name: 'Push-Up', detail: '10 reps' },
+      ]
+    }
   }
 };
 
@@ -1272,9 +1834,10 @@ function initRunWeekSelect() {
   const sel = document.getElementById('runWeekSelect');
   sel.innerHTML = '';
   for (let i = 1; i <= 26; i++) {
+    const plan = RUN_PLAN[i-1];
     const o = document.createElement('option');
     o.value = i;
-    o.textContent = `Week ${i} — ${RUN_PLAN[i-1][1]}`;
+    o.textContent = `Week ${i} — ${plan.phase}`;
     sel.appendChild(o);
   }
   // Auto-select current week
@@ -1288,16 +1851,16 @@ function initRunWeekSelect() {
 function initPlanOverview() {
   const tbody = document.getElementById('planOverviewBody');
   tbody.innerHTML = '';
-  RUN_PLAN.forEach(([wk, phase, tue, thu, sun]) => {
-    const total = tue + thu + sun;
-    const done = state.runData[wk]?.sessions?.filter(s => s.done).length || 0;
+  RUN_PLAN.forEach(plan => {
+    const total = plan.tue.dist + plan.thu.dist + plan.sun.dist;
+    const done = state.runData[plan.w]?.sessions?.filter(s => s.done).length || 0;
     const tr = document.createElement('tr');
     tr.innerHTML = `
-      <td style="font-family:'DM Mono',monospace;font-size:0.72rem;color:var(--text-dim);">${wk}</td>
-      <td style="font-family:'DM Mono',monospace;font-size:0.7rem;color:var(--text-mid);">${phase}</td>
-      <td>${tue.toFixed(1)}</td>
-      <td>${thu.toFixed(1)}</td>
-      <td style="color:var(--accent-run);font-weight:600;">${sun.toFixed(1)}</td>
+      <td style="font-family:'DM Mono',monospace;font-size:0.72rem;color:var(--text-dim);">${plan.w}</td>
+      <td style="font-family:'DM Mono',monospace;font-size:0.7rem;color:var(--text-mid);">${plan.phase}</td>
+      <td>${plan.tue.dist.toFixed(1)}</td>
+      <td>${plan.thu.dist.toFixed(1)}</td>
+      <td style="color:var(--accent-run);font-weight:600;">${plan.sun.dist.toFixed(1)}</td>
       <td style="font-family:'DM Mono',monospace;">${total.toFixed(1)}</td>
       <td>
         <div class="prog-wrap">
@@ -1313,30 +1876,36 @@ function loadRunWeek() {
   const wk = parseInt(document.getElementById('runWeekSelect').value);
   const plan = RUN_PLAN[wk - 1];
   const sessions = [
-    { day: 'TUE', type: 'Easy', target: plan[2] },
-    { day: 'THU', type: 'Tempo', target: plan[3] },
-    { day: 'SUN', type: 'Long', target: plan[4] },
+    { day: 'TUE', data: plan.tue },
+    { day: 'THU', data: plan.thu },
+    { day: 'SUN', data: plan.sun },
   ];
 
   const saved = state.runData[wk]?.sessions || [];
   const tbody = document.getElementById('runTbody');
   tbody.innerHTML = '';
+  document.getElementById('runWeekNote').textContent = 'Session notes are loaded from the run plan below.';
 
   sessions.forEach((s, i) => {
     const sv = saved[i] || {};
-    const typeCls = s.type === 'Easy' ? 'type-easy' : s.type === 'Tempo' ? 'type-tempo' : 'type-long';
+    const typeLabel = formatRunType(s.data.type);
+    const typeCls = s.data.type === 'easy' ? 'type-easy' : s.data.type === 'tempo' ? 'type-tempo' : s.data.type === 'long' ? 'type-long' : 'type-easy';
+    const durationOverride = RUN_PLAN_DURATIONS[((wk - 1) * 3) + i] || '';
+    const planTime = sv.time || durationOverride || estimateRunTime(s.data.dist, s.data.pace);
+    const timeValue = sv.time || planTime || '';
+    const notesValue = sv.notes || s.data.notes || '';
     const tr = document.createElement('tr');
     tr.innerHTML = `
       <td class="run-day">${s.day}</td>
-      <td><span class="session-type ${typeCls}">${s.type}</span></td>
-      <td style="font-family:'DM Mono',monospace;color:var(--accent-run);">${s.target.toFixed(1)}</td>
-      <td><input type="number" class="run-actual" step="0.1" placeholder="${s.target.toFixed(1)}" value="${sv.actual || ''}" onchange="updateRunStats(${wk})" style="width:80px;" /></td>
-      <td><input type="text" class="run-time" placeholder="e.g. 28:30" value="${sv.time || ''}" onchange="updateRunStats(${wk})" style="width:80px;" /></td>
+      <td><span class="session-type ${typeCls}">${typeLabel}</span></td>
+      <td style="font-family:'DM Mono',monospace;color:var(--accent-run);">${s.data.dist.toFixed(1)}</td>
+      <td><input type="number" class="run-actual" step="0.1" placeholder="${s.data.dist.toFixed(1)}" value="${sv.actual || ''}" onchange="updateRunStats(${wk})" style="width:80px;" /></td>
+      <td><input type="text" class="run-time" placeholder="${durationOverride || planTime || 'e.g. 28:30'}" value="${timeValue}" onchange="updateRunStats(${wk})" style="width:80px;" /></td>
       <td class="run-pace" style="font-family:'DM Mono',monospace;font-size:0.75rem;color:var(--text-dim);">—</td>
-      <td><input type="text" class="run-notes" placeholder="Notes…" value="${sv.notes || ''}" style="width:130px;" /></td>
+      <td><input type="text" class="run-notes" placeholder="Notes…" value="${notesValue}" style="width:130px;" /></td>
       <td><input type="checkbox" class="run-done" ${sv.done ? 'checked' : ''} onchange="updateRunStats(${wk})" style="accent-color:var(--accent-run);width:16px;height:16px;" /></td>`;
     tbody.appendChild(tr);
-    computePace(tr, s.target);
+    computePace(tr, s.data.dist);
   });
 
   updateRunStats(wk);
@@ -1360,7 +1929,7 @@ function updateRunStats(wk) {
   const rows = document.querySelectorAll('#runTbody tr');
   let totalKm = 0, done = 0, bestPaceVal = Infinity, bestPaceStr = '—';
   const plan = RUN_PLAN[wk - 1];
-  const targets = [plan[2], plan[3], plan[4]];
+  const targets = [plan.tue.dist, plan.thu.dist, plan.sun.dist];
 
   rows.forEach((tr, i) => {
     const actual = parseFloat(tr.querySelector('.run-actual').value) || 0;
@@ -1384,10 +1953,10 @@ function updateRunStats(wk) {
     }
   });
 
-  const longDone = done > 0 ? (parseFloat(document.querySelectorAll('.run-actual')[2]?.value) || plan[4]) : 0;
+  const longDone = done > 0 ? (parseFloat(document.querySelectorAll('.run-actual')[2]?.value) || plan.sun.dist) : 0;
   document.getElementById('stat-week-km').textContent = totalKm.toFixed(1);
   document.getElementById('stat-runs-done').textContent = `${done}/3`;
-  document.getElementById('stat-long-run').textContent = done >= 3 ? (parseFloat(document.querySelectorAll('.run-actual')[2]?.value) || plan[4]).toFixed(1) : plan[4].toFixed(1);
+  document.getElementById('stat-long-run').textContent = done >= 3 ? (parseFloat(document.querySelectorAll('.run-actual')[2]?.value) || plan.sun.dist).toFixed(1) : plan.sun.dist.toFixed(1);
   document.getElementById('stat-pace').textContent = bestPaceStr;
 }
 
@@ -1408,6 +1977,36 @@ function saveRunWeek() {
   save();
   initPlanOverview();
   toast('Run week saved!', 'run');
+}
+
+function formatRunType(type) {
+  if (!type) return '';
+  if (type === 'race-day') return 'Race Day';
+  if (type === 'shakeout') return 'Shakeout';
+  return type.charAt(0).toUpperCase() + type.slice(1);
+}
+
+function estimateRunTime(dist, pace) {
+  if (!pace || pace.toLowerCase().includes('your pace') || dist === 0) return '';
+  const rangeMatch = pace.match(/(\d+):(\d+)\s*–\s*(\d+):(\d+)/);
+  if (rangeMatch) {
+    const low = parseInt(rangeMatch[1], 10) * 60 + parseInt(rangeMatch[2], 10);
+    const high = parseInt(rangeMatch[3], 10) * 60 + parseInt(rangeMatch[4], 10);
+    const avgPace = Math.round((low + high) / 2);
+    const totalSec = Math.round(avgPace * dist);
+    const mins = Math.floor(totalSec / 60);
+    const secs = String(totalSec % 60).padStart(2, '0');
+    return `${mins}:${secs}`;
+  }
+  const singleMatch = pace.match(/(\d+):(\d+)/);
+  if (singleMatch) {
+    const paceSec = parseInt(singleMatch[1], 10) * 60 + parseInt(singleMatch[2], 10);
+    const totalSec = Math.round(paceSec * dist);
+    const mins = Math.floor(totalSec / 60);
+    const secs = String(totalSec % 60).padStart(2, '0');
+    return `${mins}:${secs}`;
+  }
+  return '';
 }
 
 function saveStartDate() {
@@ -1478,111 +2077,212 @@ function renderGymSession(id) {
   const split = GYM_SPLITS[s.split];
   const lastSession = getLastGymSession(s.split, id);
   const container = document.getElementById('gymContent');
-  const warmupHtml = (split.warmup || []).map(ex => `
-        <div style="display:flex;justify-content:space-between;align-items:flex-start;padding:12px 14px;background:var(--surface2);border:1px solid var(--border);border-radius:10px;">
-          <div>
-            <div class="ex-name">${ex.name}</div>
-            <div class="ex-target">${ex.repsTarget} · ${ex.rest}</div>
-          </div>
-          <div style="font-family:'DM Mono',monospace;font-size:0.75rem;color:var(--text-dim);">${ex.sets} set${ex.sets === 1 ? '' : 's'}</div>
-        </div>
-      `).join('');
-  const cooldownHtml = (split.cooldown || []).map(ex => `
-        <div style="display:flex;justify-content:space-between;align-items:flex-start;padding:12px 14px;background:var(--surface2);border:1px solid var(--border);border-radius:10px;">
-          <div>
-            <div class="ex-name">${ex.name}</div>
-            <div class="ex-target">${ex.repsTarget} · ${ex.rest}</div>
-          </div>
-          <div style="font-family:'DM Mono',monospace;font-size:0.75rem;color:var(--text-dim);">${ex.sets} set${ex.sets === 1 ? '' : 's'}</div>
-        </div>
-      `).join('');
+  if (!s.exercises) s.exercises = [];
 
+  const prefix = `Selected: ${split.name}`;
   const lastSummary = lastSession
     ? `Last ${split.name} session: ${lastSession.date || 'previous saved session'}`
     : 'No previous session history yet.';
 
+  const warmupCard = renderAuxCard(split.warmup || {});
+  const exerciseCards = (split.exercises || []).map((ex, ei) => renderExCard(ex, ei, lastSession)).join('');
+  const finisherCard = split.finisher ? renderFinisherCard(split.finisher, s.finisherRounds) : '';
+
   container.innerHTML = `
+    <div class="gym-session-header card">
+      <div class="gym-session-title">
+        <h2>${split.name}</h2>
+        <div class="presc-chip">Session #${id}</div>
+      </div>
+      <div class="gym-session-meta">${s.date || 'No date set'} · ${lastSummary}</div>
+    </div>
+    ${warmupCard}
+    <div class="section-label" style="margin-top:16px"><span class="dot dot-gym"></span> MAIN WORK</div>
+    ${exerciseCards}
+    ${finisherCard}
     <div class="card">
-      <div style="display:flex;align-items:center;gap:14px;margin-bottom:18px;flex-wrap:wrap;">
-        <span class="split-badge">SESSION ${s.split}</span>
-        <div>
-          <div style="font-weight:600;font-size:0.95rem;">${split.name}</div>
-          <div style="font-family:'DM Mono',monospace;font-size:0.68rem;color:var(--text-dim);">SESSION #${id} · ${s.date || '—'}</div>
+      <div style="font-family:'DM Mono',monospace;font-size:0.65rem;color:var(--text-dim);margin-bottom:8px;letter-spacing:1px;">SESSION NOTES</div>
+      <textarea id="gymSessionNotes" class="session-notes" placeholder="How did it feel? PBs? Injuries?">${s.notes || ''}</textarea>
+    </div>`;
+}
+
+function renderAuxCard(warmup) {
+  const items = warmup.items || [];
+  const note = warmup.note || 'Use these drills to prepare movement quality and mobility.';
+  if (!items.length) {
+    return `<div class="card"><div style="color:var(--text-dim);font-family:'DM Mono',monospace;font-size:0.82rem;padding:16px;">No warm-up programmed for this session.</div></div>`;
+  }
+
+  return `
+    <div class="aux-card open" id="auxWarmup">
+      <div class="aux-header" onclick="toggleAux('auxWarmup')">
+        <div class="aux-icon">🔥</div>
+        <div class="aux-title">
+          <div class="name">Warm-Up</div>
+          <div class="sub">${items.length} exercises · complete before main work</div>
+        </div>
+        <span class="aux-chevron">▼</span>
+      </div>
+      <div class="aux-body">
+        <div class="aux-note">${note}</div>
+        ${items.map(item => `
+          <div class="aux-item">
+            <div class="aux-check"></div>
+            <div>
+              <div class="aux-item-text">${item.text}</div>
+              <div class="aux-item-detail">${item.detail}</div>
+            </div>
+          </div>
+        `).join('')}
+      </div>
+    </div>`;
+}
+
+function renderFinisherCard(fin, rounds) {
+  if (!fin) return '';
+  return `
+    <div class="aux-card open" id="auxFinisher">
+      <div class="aux-header" onclick="toggleAux('auxFinisher')">
+        <div class="aux-icon">${fin.icon || '🔥'}</div>
+        <div class="aux-title">
+          <div class="name">${fin.name}</div>
+          <div class="sub">${fin.desc || ''}</div>
+        </div>
+        <span class="aux-chevron">▼</span>
+      </div>
+      <div class="aux-body">
+        ${fin.items.map(item => `
+          <div class="aux-item">
+            <div class="aux-check"></div>
+            <div>
+              <div class="aux-item-text">${item.name}</div>
+              <div class="aux-item-detail">${item.detail || ''}</div>
+            </div>
+          </div>
+        `).join('')}
+        <div class="finisher-log" style="margin-top:14px;display:flex;align-items:center;gap:10px;">
+          <label style="font-family:'DM Mono',monospace;font-size:0.75rem;color:var(--text-dim);">${fin.logLabel || 'Rounds completed'}</label>
+          <input id="finisherRoundsInput" type="number" min="0" value="${rounds || ''}" placeholder="0" style="width:72px;" />
         </div>
       </div>
-
-      <div class="history-summary">${lastSummary}</div>
-
-      <div class="section-label"><span class="dot dot-gym"></span> WARM-UP</div>
-      <div style="display:grid;gap:10px;margin-bottom:16px;">${warmupHtml}</div>
-
-      <table class="gym-table" id="gymExTable">
-        <thead>
-          <tr>
-            <th style="min-width:160px;">EXERCISE</th>
-            <th>TARGET</th>
-            <th>REST</th>
-            <th colspan="4">SETS (REPS × WEIGHT kg)</th>
-            <th>NOTES</th>
-          </tr>
-        </thead>
-        <tbody id="gymExBody"></tbody>
-      </table>
-
-      <div class="section-label" style="margin-top:20px;"><span class="dot dot-gym"></span> COOL-DOWN</div>
-      <div style="display:grid;gap:10px;margin-top:10px;">${cooldownHtml}</div>
-
-      <div class="divider"></div>
-      <div style="font-family:'DM Mono',monospace;font-size:0.65rem;color:var(--text-dim);margin-bottom:8px;letter-spacing:1px;">SESSION NOTES</div>
-      <textarea id="gymSessionNotes" placeholder="How did it feel? PBs? Injuries?">${s.notes || ''}</textarea>
     </div>`;
+}
 
-  const tbody = document.getElementById('gymExBody');
-  split.exercises.forEach((ex, ei) => {
-    const saved = s.exercises?.[ei] || { sets: [] };
-    const prevSets = lastSession?.exercises?.[ei]?.sets || [];
-    const prevText = prevSets.filter(v => v.reps !== undefined && v.reps !== '' && (v.weight !== undefined && v.weight !== '')).map(v => `${v.weight || 'BW'}kg × ${v.reps}`).join(' · ') || 'No previous data';
+function toggleAux(id) {
+  const card = document.getElementById(id);
+  if (card) card.classList.toggle('open');
+}
 
-    const tr = document.createElement('tr');
-    tr.className = 'exercise-row';
-    tr.dataset.exIndex = ei;
 
-    let setsHTML = '';
-    for (let si = 0; si < ex.sets; si++) {
-      const sv = saved.sets?.[si] || {};
-      const repsValue = sv.reps !== undefined && sv.reps !== '' ? sv.reps : getDefaultReps(ex.repsTarget);
-      setsHTML += `
-        <td>
-          <div class="set-input-group">
-            <div class="set-label">S${si+1}</div>
-            <input type="number" class="set-input" placeholder="reps" value="${repsValue}" min="0" max="50" />
-            <input type="number" class="weight-input" placeholder="kg" value="${sv.weight || ''}" step="0.5" min="0" max="500" />
-          </div>
-        </td>`;
-    }
-    for (let si = ex.sets; si < 4; si++) {
-      setsHTML += `<td style="color:var(--border);font-size:0.65rem;text-align:center;">—</td>`;
-    }
+function renderExCard(ex, idx, lastSession) {
+  const s = state.gymSessions[state.currentGymSession];
+  if (!s.exercises[idx]) s.exercises[idx] = { sets: [] };
+  const saved = s.exercises[idx];
+  const prevSets = lastSession?.exercises?.[idx]?.sets || [];
+  const prevText = prevSets.filter(v => (v.reps || v.reps === 0) && (v.weight || v.weight === 0)).map(v => `${v.weight || 'BW'}kg × ${v.reps}`).join(' · ') || 'No previous data';
+  const setCount = Math.max(ex.sets || 1, saved.sets?.length || 0);
 
-    tr.innerHTML = `
-      <td class="ex-name">${ex.name}</td>
-      <td class="ex-target">${ex.repsTarget}</td>
-      <td class="ex-target">${ex.rest}</td>
-      ${setsHTML}
-      <td><input type="text" placeholder="notes" value="${saved.notes || ''}" style="width:100px;" /></td>`;
-    tbody.appendChild(tr);
+  const setsHTML = Array.from({ length: setCount }, (_, si) => {
+    const set = saved.sets[si] || { reps: '', weight: '' };
+    const repsValue = set.reps !== undefined ? set.reps : '';
+    const weightValue = set.weight !== undefined ? set.weight : '';
+    const complete = repsValue !== '' && weightValue !== '';
+    return `
+      <div class="set-row" id="setrow_${idx}_${si}">
+        <div class="set-num">${si + 1}</div>
+        <input type="number" class="si ${complete ? 'done' : ''}" placeholder="kg" value="${weightValue}" step="0.5" min="0"
+          onchange="updateGymSet(${idx}, ${si}, 'weight', this.value)"
+          oninput="updateGymSet(${idx}, ${si}, 'weight', this.value)">
+        <input type="number" class="si ${complete ? 'done' : ''}" placeholder="reps" value="${repsValue}" min="0"
+          onchange="updateGymSet(${idx}, ${si}, 'reps', this.value)"
+          oninput="updateGymSet(${idx}, ${si}, 'reps', this.value)">
+        <button class="set-del" onclick="removeGymSet(${idx}, ${si})">×</button>
+      </div>`;
+  }).join('');
 
-    const historyRow = document.createElement('tr');
-    historyRow.className = 'history-row';
-    historyRow.innerHTML = `
-      <td colspan="8">
-        <div class="history-row-content">
-          <span class="history-label">Last:</span>
-          <span class="history-values">${prevText}</span>
+  return `
+    <div class="exercise-card" id="excard_${idx}">
+      <div class="ex-header" onclick="toggleEx(${idx})">
+        <div class="ex-name-wrap">
+          <div class="ex-name">${ex.name}</div>
+          <div class="ex-note-text">${ex.note || `${ex.repsTarget} · ${ex.rest}`}</div>
         </div>
-      </td>`;
-    tbody.appendChild(historyRow);
-  });
+        <div class="ex-right">
+          <span class="presc-chip">${ex.sets} sets</span>
+          <span class="ex-chevron">▼</span>
+        </div>
+      </div>
+      <div class="ex-body">
+        <div class="prev-row">
+          <span class="prev-label">Last:</span>
+          <span class="prev-sets">${prevText}</span>
+        </div>
+        <div class="sets-head" style="display:grid;grid-template-columns:34px 1fr 1fr auto;gap:8px;padding:0 0 6px;font-size:11px;color:var(--text-dim);text-transform:uppercase;letter-spacing:.6px;">
+          <div>#</div><div>Weight</div><div>Reps</div><div></div>
+        </div>
+        ${setsHTML}
+        <div class="set-actions">
+          <button class="btn btn-ghost btn-sm" onclick="addGymSet(${idx})">+ Set</button>
+          <button class="btn btn-rest btn-sm" onclick="startRest('${ex.rest}')">⏱ Rest</button>
+        </div>
+      </div>
+    </div>`;
+}
+
+function toggleEx(idx) {
+  const card = document.getElementById(`excard_${idx}`);
+  if (card) card.classList.toggle('open');
+}
+
+function updateGymSet(exIndex, setIndex, field, value) {
+  const id = state.currentGymSession;
+  if (!id) return;
+  const s = state.gymSessions[id];
+  if (!s.exercises) s.exercises = [];
+  if (!s.exercises[exIndex]) s.exercises[exIndex] = { sets: [] };
+  if (!s.exercises[exIndex].sets) s.exercises[exIndex].sets = [];
+  if (!s.exercises[exIndex].sets[setIndex]) s.exercises[exIndex].sets[setIndex] = { reps: '', weight: '' };
+  s.exercises[exIndex].sets[setIndex][field] = value;
+  save();
+  renderGymSession(id);
+}
+
+function addGymSet(exIndex) {
+  const id = state.currentGymSession;
+  if (!id) return;
+  const s = state.gymSessions[id];
+  if (!s.exercises) s.exercises = [];
+  if (!s.exercises[exIndex]) s.exercises[exIndex] = { sets: [] };
+  const sets = s.exercises[exIndex].sets || [];
+  const last = sets[sets.length - 1] || { reps: '', weight: '' };
+  sets.push({ reps: last.reps || '', weight: last.weight || '' });
+  s.exercises[exIndex].sets = sets;
+  save();
+  renderGymSession(id);
+}
+
+function removeGymSet(exIndex, setIndex) {
+  const id = state.currentGymSession;
+  if (!id) return;
+  const s = state.gymSessions[id];
+  if (!s.exercises || !s.exercises[exIndex] || !s.exercises[exIndex].sets) return;
+  s.exercises[exIndex].sets.splice(setIndex, 1);
+  save();
+  renderGymSession(id);
+}
+
+function startRest(restText) {
+  const pill = document.getElementById('restPill');
+  if (!pill) return;
+  pill.querySelector('.rest-label').textContent = `Rest ${restText}`;
+  pill.classList.add('show');
+  clearTimeout(window._gymRestTimeout);
+  window._gymRestTimeout = setTimeout(() => pill.classList.remove('show'), 4000);
+}
+
+function closeRestPill() {
+  const pill = document.getElementById('restPill');
+  if (pill) pill.classList.remove('show');
 }
 
 function saveGymSession() {
@@ -1609,6 +2309,7 @@ function saveGymSession() {
 
   s.exercises = exercises;
   s.notes = document.getElementById('gymSessionNotes')?.value || '';
+  s.finisherRounds = document.getElementById('finisherRoundsInput')?.value || '';
   save();
   toast('Session saved!', 'gym');
 }
@@ -1627,7 +2328,7 @@ function createNewSession() {
   const date = document.getElementById('modalSessionDate').value;
   state.gymSessionCounter++;
   const id = state.gymSessionCounter;
-  state.gymSessions[id] = { split, date, exercises: [], notes: '' };
+  state.gymSessions[id] = { split, date, exercises: [], notes: '', finisherRounds: '' };
   state.currentGymSession = id;
   save();
   closeModal();
