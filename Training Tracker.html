@@ -1,0 +1,1859 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Training Tracker</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Mono:wght@300;400;500&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0d0f14;
+    --surface: #141720;
+    --surface2: #1c2030;
+    --border: #252a3a;
+    --accent-run: #00e5a0;
+    --accent-gym: #ff6b35;
+    --accent-dim-run: rgba(0,229,160,0.12);
+    --accent-dim-gym: rgba(255,107,53,0.12);
+    --text: #e8eaf0;
+    --text-dim: #6b7280;
+    --text-mid: #9ca3af;
+    --success: #22c55e;
+    --danger: #ef4444;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* HEADER */
+  header {
+    padding: 24px 28px 0;
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+
+  .logo {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 2.6rem;
+    letter-spacing: 3px;
+    line-height: 1;
+  }
+  .logo span.run { color: var(--accent-run); }
+  .logo span.gym { color: var(--accent-gym); }
+
+  .week-badge {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.72rem;
+    color: var(--text-dim);
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 6px 14px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+
+  /* TAB NAV */
+  .tab-nav {
+    display: flex;
+    gap: 0;
+    padding: 20px 28px 0;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 0;
+  }
+
+  .tab-btn {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.78rem;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    background: none;
+    border: none;
+    color: var(--text-dim);
+    padding: 10px 22px;
+    cursor: pointer;
+    position: relative;
+    transition: color 0.2s;
+  }
+
+  .tab-btn::after {
+    content: '';
+    position: absolute;
+    bottom: -1px; left: 0; right: 0;
+    height: 2px;
+    background: transparent;
+    transition: background 0.2s;
+  }
+
+  .tab-btn.active-run { color: var(--accent-run); }
+  .tab-btn.active-run::after { background: var(--accent-run); }
+  .tab-btn.active-gym { color: var(--accent-gym); }
+  .tab-btn.active-gym::after { background: var(--accent-gym); }
+
+  .tab-btn:hover:not(.active-run):not(.active-gym) { color: var(--text-mid); }
+
+  /* PANELS */
+  .panel { display: none; padding: 24px 28px 40px; }
+  .panel.active { display: block; }
+
+  /* SECTION HEADERS */
+  .section-label {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.1rem;
+    letter-spacing: 3px;
+    margin-bottom: 14px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .section-label .dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    display: inline-block;
+  }
+  .dot-run { background: var(--accent-run); }
+  .dot-gym { background: var(--accent-gym); }
+
+  /* CARDS */
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 18px 20px;
+    margin-bottom: 14px;
+  }
+
+  /* WEEK GRID - Run Plan */
+  .week-selector {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 22px;
+    flex-wrap: wrap;
+  }
+
+  .week-selector label {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.72rem;
+    color: var(--text-dim);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+
+  select, input[type="number"], input[type="text"], input[type="date"] {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    color: var(--text);
+    font-family: 'DM Mono', monospace;
+    font-size: 0.82rem;
+    padding: 7px 12px;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+
+  select:focus, input:focus {
+    border-color: var(--accent-run);
+  }
+
+  .gym-panel select:focus, .gym-panel input:focus {
+    border-color: var(--accent-gym);
+  }
+
+  /* RUN SESSIONS TABLE */
+  .run-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.85rem;
+  }
+
+  .run-table th {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    text-align: left;
+    padding: 8px 10px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .run-table td {
+    padding: 10px 10px;
+    border-bottom: 1px solid var(--border);
+    vertical-align: middle;
+  }
+
+  .run-table tr:last-child td { border-bottom: none; }
+
+  .run-table input[type="number"],
+  .run-table input[type="text"] {
+    width: 90px;
+    padding: 5px 8px;
+    font-size: 0.8rem;
+  }
+
+  .session-type {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.72rem;
+    padding: 3px 10px;
+    border-radius: 20px;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+  }
+
+  .type-easy { background: rgba(34,197,94,0.15); color: #4ade80; }
+  .type-tempo { background: rgba(251,191,36,0.15); color: #fbbf24; }
+  .type-long { background: rgba(0,229,160,0.15); color: var(--accent-run); }
+  .type-rest { background: rgba(107,114,128,0.1); color: var(--text-dim); }
+
+  .run-day {
+    font-weight: 600;
+    color: var(--text-mid);
+    font-size: 0.78rem;
+    min-width: 40px;
+  }
+
+  /* PROGRESS BAR */
+  .prog-wrap {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    min-width: 120px;
+  }
+  .prog-bar {
+    flex: 1;
+    height: 4px;
+    background: var(--border);
+    border-radius: 2px;
+    overflow: hidden;
+  }
+  .prog-fill {
+    height: 100%;
+    border-radius: 2px;
+    background: var(--accent-run);
+    transition: width 0.3s;
+  }
+  .prog-pct {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.65rem;
+    color: var(--text-dim);
+    min-width: 30px;
+    text-align: right;
+  }
+
+  /* STATS ROW */
+  .stats-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: 12px;
+    margin-bottom: 22px;
+  }
+
+  .stat-card {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 14px 16px;
+    text-align: center;
+  }
+
+  .stat-val {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.8rem;
+    letter-spacing: 1px;
+    line-height: 1;
+  }
+
+  .stat-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.62rem;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    margin-top: 4px;
+  }
+
+  .run-stat { color: var(--accent-run); }
+  .gym-stat { color: var(--accent-gym); }
+
+  /* GYM SESSION CONTROLS */
+  .session-controls {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-bottom: 20px;
+  }
+
+  .session-pill {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 8px 14px;
+  }
+
+  .session-pill label {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.68rem;
+    color: var(--text-dim);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+
+  .btn {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.72rem;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    border: none;
+    border-radius: 8px;
+    padding: 9px 18px;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+
+  .btn-run {
+    background: var(--accent-run);
+    color: #0d0f14;
+  }
+  .btn-run:hover { opacity: 0.85; }
+
+  .btn-gym {
+    background: var(--accent-gym);
+    color: #0d0f14;
+  }
+  .btn-gym:hover { opacity: 0.85; }
+
+  .btn-ghost {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    color: var(--text-mid);
+  }
+  .btn-ghost:hover { border-color: var(--text-dim); color: var(--text); }
+
+  .btn-danger {
+    background: rgba(239,68,68,0.15);
+    border: 1px solid rgba(239,68,68,0.3);
+    color: var(--danger);
+  }
+
+  /* GYM EXERCISE TABLE */
+  .gym-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.83rem;
+  }
+
+  .gym-table th {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.63rem;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    text-align: left;
+    padding: 8px 10px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .gym-table td {
+    padding: 8px 10px;
+    border-bottom: 1px solid var(--border);
+    vertical-align: middle;
+  }
+
+  .gym-table tr:last-child td { border-bottom: none; }
+
+  .ex-name {
+    font-weight: 500;
+    color: var(--text);
+    font-size: 0.85rem;
+  }
+
+  .ex-target {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.72rem;
+    color: var(--text-dim);
+  }
+
+  .sets-grid {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+  }
+
+  .set-input-group {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 3px;
+  }
+
+  .set-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.58rem;
+    color: var(--text-dim);
+    letter-spacing: 1px;
+  }
+
+  .set-input {
+    width: 56px !important;
+    text-align: center;
+  }
+
+  .weight-input {
+    width: 72px !important;
+    text-align: center;
+  }
+
+  /* SPLIT BADGE */
+  .split-badge {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.3rem;
+    letter-spacing: 2px;
+    padding: 4px 14px;
+    border-radius: 6px;
+    background: var(--accent-dim-gym);
+    border: 1px solid rgba(255,107,53,0.3);
+    color: var(--accent-gym);
+  }
+
+  /* SESSION LIST */
+  .session-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 16px;
+  }
+
+  .session-chip {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.68rem;
+    letter-spacing: 0.5px;
+    padding: 5px 12px;
+    border-radius: 6px;
+    cursor: pointer;
+    border: 1px solid var(--border);
+    background: var(--surface2);
+    color: var(--text-mid);
+    transition: all 0.15s;
+  }
+
+  .session-chip:hover { border-color: var(--accent-gym); color: var(--accent-gym); }
+  .session-chip.active { border-color: var(--accent-gym); background: var(--accent-dim-gym); color: var(--accent-gym); }
+
+  /* NOTES */
+  textarea {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.82rem;
+    padding: 10px 14px;
+    width: 100%;
+    resize: vertical;
+    outline: none;
+    min-height: 64px;
+    transition: border-color 0.2s;
+  }
+  textarea:focus { border-color: var(--accent-gym); }
+
+  /* WEIGHT TRACKER */
+  .weight-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .weight-row:last-child { border-bottom: none; }
+
+  .weight-date {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.72rem;
+    color: var(--text-dim);
+    min-width: 90px;
+  }
+
+  .weight-val {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.5rem;
+    color: var(--accent-run);
+    min-width: 70px;
+  }
+
+  .weight-change {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.72rem;
+    padding: 2px 8px;
+    border-radius: 4px;
+  }
+
+  .wc-up { background: rgba(239,68,68,0.15); color: var(--danger); }
+  .wc-down { background: rgba(34,197,94,0.15); color: var(--success); }
+
+  /* TOAST */
+  .toast {
+    position: fixed;
+    bottom: 28px; right: 28px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 12px 20px;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.75rem;
+    color: var(--text);
+    z-index: 1000;
+    opacity: 0;
+    transform: translateY(10px);
+    transition: all 0.3s;
+    pointer-events: none;
+  }
+  .toast.show { opacity: 1; transform: translateY(0); }
+  .toast.run { border-left: 3px solid var(--accent-run); }
+  .toast.gym { border-left: 3px solid var(--accent-gym); }
+
+  /* MODAL */
+  .modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.7);
+    z-index: 500;
+    justify-content: center;
+    align-items: center;
+  }
+  .modal-overlay.show { display: flex; }
+  .modal {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 28px;
+    width: 90%;
+    max-width: 380px;
+  }
+  .modal h3 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.4rem;
+    letter-spacing: 2px;
+    margin-bottom: 16px;
+  }
+  .modal .btn-row { display: flex; gap: 10px; margin-top: 20px; justify-content: flex-end; }
+
+  .divider {
+    height: 1px;
+    background: var(--border);
+    margin: 20px 0;
+  }
+
+  /* Responsive */
+  @media (max-width: 600px) {
+    header, .tab-nav, .panel { padding-left: 16px; padding-right: 16px; }
+    .run-table, .gym-table { font-size: 0.78rem; }
+    .set-input { width: 46px !important; }
+    .weight-input { width: 58px !important; }
+  }
+
+  /* ═══ CALENDAR STYLES ═══ */
+  .cal-nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+
+  .cal-nav-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.6rem;
+    letter-spacing: 3px;
+    color: var(--text);
+  }
+
+  .cal-nav-btns { display: flex; gap: 8px; align-items: center; }
+
+  .cal-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 6px;
+    margin-bottom: 24px;
+  }
+
+  .cal-day-header {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.62rem;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    text-align: center;
+    padding: 6px 0;
+  }
+
+  .cal-cell {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 8px 6px;
+    min-height: 86px;
+    cursor: pointer;
+    transition: border-color 0.15s, background 0.15s;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .cal-cell:hover { border-color: var(--text-dim); }
+  .cal-cell.today { border-color: rgba(255,255,255,0.25); }
+  .cal-cell.today .cal-date { color: var(--text); font-weight: 700; }
+  .cal-cell.out-of-range { opacity: 0.3; cursor: default; }
+  .cal-cell.empty { background: transparent; border-color: transparent; cursor: default; }
+
+  .cal-date {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.72rem;
+    color: var(--text-dim);
+    margin-bottom: 5px;
+  }
+
+  .cal-event {
+    font-size: 0.67rem;
+    border-radius: 4px;
+    padding: 2px 5px;
+    margin-bottom: 3px;
+    line-height: 1.3;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-family: 'DM Mono', monospace;
+  }
+
+  .cal-event.ev-gym-a { background: rgba(255,107,53,0.15); color: #ff9870; border-left: 2px solid var(--accent-gym); }
+  .cal-event.ev-gym-b { background: rgba(255,149,53,0.12); color: #ffb080; border-left: 2px solid #ffaa60; }
+  .cal-event.ev-gym-c { background: rgba(255,80,53,0.12); color: #ff8060; border-left: 2px solid #ff6040; }
+  .cal-event.ev-run-easy { background: rgba(34,197,94,0.12); color: #4ade80; border-left: 2px solid #4ade80; }
+  .cal-event.ev-run-tempo { background: rgba(251,191,36,0.12); color: #fbbf24; border-left: 2px solid #fbbf24; }
+  .cal-event.ev-run-long { background: rgba(0,229,160,0.15); color: var(--accent-run); border-left: 2px solid var(--accent-run); }
+  .cal-event.ev-rest { background: rgba(107,114,128,0.08); color: var(--text-dim); border-left: 2px solid var(--border); }
+  .cal-event.ev-race { background: rgba(168,85,247,0.2); color: #c084fc; border-left: 2px solid #a855f7; }
+
+  .cal-done-dot {
+    position: absolute;
+    top: 7px; right: 7px;
+    width: 7px; height: 7px;
+    border-radius: 50%;
+    background: var(--accent-run);
+  }
+
+  .cal-week-label {
+    position: absolute;
+    bottom: 4px; left: 6px;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.55rem;
+    color: var(--border);
+    letter-spacing: 0.5px;
+  }
+
+  /* WEEK DETAIL PANEL */
+  .week-detail {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 14px;
+    display: none;
+  }
+
+  .week-detail.open { display: block; }
+
+  .week-detail-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.2rem;
+    letter-spacing: 2px;
+    margin-bottom: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .day-row {
+    display: grid;
+    grid-template-columns: 70px 90px 1fr auto;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .day-row:last-child { border-bottom: none; }
+
+  .day-name {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.75rem;
+    color: var(--text-mid);
+    letter-spacing: 1px;
+  }
+
+  .day-name.today-label { color: var(--accent-run); }
+
+  .day-session-badge {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.65rem;
+    padding: 3px 8px;
+    border-radius: 4px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    white-space: nowrap;
+  }
+
+  .day-detail-text {
+    font-size: 0.8rem;
+    color: var(--text-mid);
+  }
+
+  .cal-legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-bottom: 20px;
+  }
+
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.65rem;
+    color: var(--text-dim);
+    letter-spacing: 0.5px;
+  }
+
+  .legend-dot {
+    width: 10px; height: 10px;
+    border-radius: 2px;
+  }
+
+  .cal-stats-mini {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+    gap: 10px;
+    margin-bottom: 20px;
+  }
+
+  .cal-stat-mini {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 10px 12px;
+    text-align: center;
+  }
+
+  .cal-stat-mini .val {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.4rem;
+    letter-spacing: 1px;
+    color: var(--accent-run);
+    line-height: 1;
+  }
+
+  .cal-stat-mini .lbl {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.58rem;
+    color: var(--text-dim);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin-top: 3px;
+  }
+
+  @media (max-width: 700px) {
+    .cal-grid { gap: 3px; }
+    .cal-cell { min-height: 64px; padding: 5px 4px; }
+    .cal-event { font-size: 0.58rem; padding: 1px 3px; }
+    .day-row { grid-template-columns: 55px 80px 1fr; }
+    .day-row > *:last-child { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">
+    <span class="run">RUN</span> <span style="color:var(--text-dim)">&amp;</span> <span class="gym">GYM</span>
+    <div style="font-family:'DM Mono',monospace;font-size:0.65rem;color:var(--text-dim);letter-spacing:2px;margin-top:2px;">QUEENSTOWN HM · 26 WEEKS</div>
+  </div>
+  <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;">
+    <div class="week-badge" id="currentDateBadge">— / — / —</div>
+    <div class="week-badge" id="weekCountBadge">WK —</div>
+  </div>
+</header>
+
+<div class="tab-nav">
+  <button class="tab-btn active-run" onclick="switchTab('run')">🏃 Run Plan</button>
+  <button class="tab-btn" onclick="switchTab('gym')">🏋️ Gym Log</button>
+  <button class="tab-btn" onclick="switchTab('weight')">⚖️ Weight</button>
+  <button class="tab-btn" onclick="switchTab('calendar')">📅 Calendar</button>
+</div>
+
+<!-- ═══════════════════════════════ RUN PANEL ═══════════════════════════════ -->
+<div class="panel active" id="panel-run">
+
+  <div class="stats-row" style="margin-top:20px;">
+    <div class="stat-card">
+      <div class="stat-val run-stat" id="stat-week-km">0.0</div>
+      <div class="stat-label">Week KM</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-val run-stat" id="stat-runs-done">0/3</div>
+      <div class="stat-label">Runs Done</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-val run-stat" id="stat-long-run">0.0</div>
+      <div class="stat-label">Long Run KM</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-val" style="color:var(--text-mid);font-size:1.4rem;" id="stat-pace">—:——</div>
+      <div class="stat-label">Best Pace</div>
+    </div>
+  </div>
+
+  <div class="week-selector">
+    <label>TRAINING WEEK</label>
+    <select id="runWeekSelect" onchange="loadRunWeek()">
+    </select>
+    <label style="margin-left:8px;">START DATE</label>
+    <input type="date" id="startDateInput" onchange="saveStartDate()" />
+    <button class="btn btn-run" onclick="saveRunWeek()" style="margin-left:auto;">SAVE WEEK</button>
+  </div>
+
+  <div class="card" id="runCard">
+    <div class="section-label"><span class="dot dot-run"></span> WEEKLY SESSIONS</div>
+    <table class="run-table" id="runTable">
+      <thead>
+        <tr>
+          <th>DAY</th>
+          <th>TYPE</th>
+          <th>TARGET KM</th>
+          <th>ACTUAL KM</th>
+          <th>TIME (MM:SS)</th>
+          <th>PACE /KM</th>
+          <th>NOTES</th>
+          <th>✓</th>
+        </tr>
+      </thead>
+      <tbody id="runTbody"></tbody>
+    </table>
+  </div>
+
+  <div class="card">
+    <div class="section-label"><span class="dot dot-run"></span> 26-WEEK PROGRAMME OVERVIEW</div>
+    <div style="overflow-x:auto;">
+      <table class="run-table">
+        <thead>
+          <tr>
+            <th>WK</th>
+            <th>PHASE</th>
+            <th>TUE (EASY)</th>
+            <th>THU (TEMPO)</th>
+            <th>SUN (LONG)</th>
+            <th>TOTAL KM</th>
+            <th>DONE</th>
+          </tr>
+        </thead>
+        <tbody id="planOverviewBody"></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════ GYM PANEL ═══════════════════════════════ -->
+<div class="panel gym-panel" id="panel-gym">
+
+  <div style="margin-top:20px;">
+    <div class="session-controls">
+      <div class="session-pill">
+        <label>SESSION #</label>
+        <select id="gymSessionSelect" onchange="loadGymSession()">
+        </select>
+      </div>
+      <button class="btn btn-gym" onclick="newGymSession()">+ NEW SESSION</button>
+      <button class="btn btn-ghost" onclick="saveGymSession()">SAVE</button>
+      <button class="btn btn-danger" onclick="deleteGymSession()">DELETE</button>
+    </div>
+
+    <div id="savedSessionsRow" class="session-list"></div>
+  </div>
+
+  <div id="gymContent">
+    <div class="card" style="text-align:center;padding:40px;">
+      <div style="color:var(--text-dim);font-family:'DM Mono',monospace;font-size:0.8rem;">SELECT OR CREATE A SESSION ABOVE</div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════ WEIGHT PANEL ═══════════════════════════════ -->
+<div class="panel" id="panel-weight">
+  <div style="margin-top:20px;">
+    <div class="stats-row">
+      <div class="stat-card">
+        <div class="stat-val run-stat" id="w-current">—</div>
+        <div class="stat-label">Current KG</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-val" id="w-start" style="color:var(--text-mid)">—</div>
+        <div class="stat-label">Start KG</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-val" id="w-change" style="color:var(--success)">—</div>
+        <div class="stat-label">Total Change</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-val" id="w-entries" style="color:var(--text-mid)">0</div>
+        <div class="stat-label">Entries</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="section-label"><span class="dot dot-run"></span> LOG WEIGHT</div>
+      <div style="display:flex;gap:10px;align-items:flex-end;flex-wrap:wrap;">
+        <div>
+          <div style="font-family:'DM Mono',monospace;font-size:0.65rem;color:var(--text-dim);margin-bottom:6px;letter-spacing:1px;">DATE</div>
+          <input type="date" id="weightDate" />
+        </div>
+        <div>
+          <div style="font-family:'DM Mono',monospace;font-size:0.65rem;color:var(--text-dim);margin-bottom:6px;letter-spacing:1px;">WEIGHT (KG)</div>
+          <input type="number" id="weightInput" placeholder="e.g. 82.5" step="0.1" style="width:120px;" />
+        </div>
+        <div>
+          <div style="font-family:'DM Mono',monospace;font-size:0.65rem;color:var(--text-dim);margin-bottom:6px;letter-spacing:1px;">PERSON</div>
+          <select id="weightPerson">
+            <option value="p1">Person 1 (Running)</option>
+            <option value="p2">Person 2</option>
+          </select>
+        </div>
+        <button class="btn btn-run" onclick="addWeightEntry()">LOG</button>
+      </div>
+    </div>
+
+    <div style="display:flex;gap:14px;margin-bottom:14px;flex-wrap:wrap;">
+      <button class="btn btn-ghost" id="wTabP1" onclick="switchWeightPerson('p1')" style="border-color:var(--accent-run);color:var(--accent-run);">PERSON 1</button>
+      <button class="btn btn-ghost" id="wTabP2" onclick="switchWeightPerson('p2')">PERSON 2</button>
+    </div>
+
+    <div class="card" id="weightLog">
+      <div class="section-label"><span class="dot dot-run"></span> WEIGHT HISTORY</div>
+      <div id="weightEntries"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════ CALENDAR PANEL ═══════════════════════════════ -->
+<div class="panel" id="panel-calendar">
+  <div style="margin-top:20px;">
+
+    <!-- Overall stats -->
+    <div class="cal-stats-mini" id="calStats"></div>
+
+    <!-- Navigation -->
+    <div class="cal-nav">
+      <div class="cal-nav-title" id="calMonthTitle">— ——</div>
+      <div class="cal-nav-btns">
+        <button class="btn btn-ghost" onclick="calPrev()" style="padding:7px 14px;">‹ PREV</button>
+        <button class="btn btn-ghost" onclick="calToday()" style="padding:7px 14px;">TODAY</button>
+        <button class="btn btn-ghost" onclick="calNext()" style="padding:7px 14px;">NEXT ›</button>
+      </div>
+    </div>
+
+    <!-- Legend -->
+    <div class="cal-legend">
+      <div class="legend-item"><div class="legend-dot" style="background:var(--accent-gym);"></div>GYM A (PUSH)</div>
+      <div class="legend-item"><div class="legend-dot" style="background:#ffaa60;"></div>GYM B (PULL)</div>
+      <div class="legend-item"><div class="legend-dot" style="background:#ff6040;"></div>GYM C (LEGS)</div>
+      <div class="legend-item"><div class="legend-dot" style="background:#4ade80;"></div>EASY RUN</div>
+      <div class="legend-item"><div class="legend-dot" style="background:#fbbf24;"></div>TEMPO RUN</div>
+      <div class="legend-item"><div class="legend-dot" style="background:var(--accent-run);"></div>LONG RUN</div>
+      <div class="legend-item"><div class="legend-dot" style="background:#a855f7;"></div>RACE DAY</div>
+      <div class="legend-item"><div class="legend-dot" style="background:var(--border);"></div>REST</div>
+    </div>
+
+    <!-- Calendar grid -->
+    <div class="cal-grid" id="calGrid">
+      <div class="cal-day-header">MON</div>
+      <div class="cal-day-header">TUE</div>
+      <div class="cal-day-header">WED</div>
+      <div class="cal-day-header">THU</div>
+      <div class="cal-day-header">FRI</div>
+      <div class="cal-day-header">SAT</div>
+      <div class="cal-day-header">SUN</div>
+    </div>
+
+    <!-- Week detail (shown when cell clicked) -->
+    <div class="week-detail" id="weekDetail">
+      <div class="week-detail-title">
+        <span id="weekDetailTitle">WEEK —</span>
+        <button class="btn btn-ghost" onclick="closeWeekDetail()" style="padding:5px 12px;font-size:0.65rem;">CLOSE ✕</button>
+      </div>
+      <div id="weekDetailBody"></div>
+    </div>
+
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<!-- NEW SESSION MODAL -->
+<div class="modal-overlay" id="newSessionModal">
+  <div class="modal">
+    <h3 style="color:var(--accent-gym);">NEW GYM SESSION</h3>
+    <div style="margin-bottom:14px;">
+      <div style="font-family:'DM Mono',monospace;font-size:0.65rem;color:var(--text-dim);margin-bottom:8px;letter-spacing:1px;">SESSION TYPE</div>
+      <select id="modalSplitSelect" style="width:100%;">
+        <option value="A">Session A — Push (Chest / Shoulders / Triceps)</option>
+        <option value="B">Session B — Pull (Back / Biceps / Rear Delt)</option>
+        <option value="C">Session C — Legs & Core</option>
+      </select>
+    </div>
+    <div>
+      <div style="font-family:'DM Mono',monospace;font-size:0.65rem;color:var(--text-dim);margin-bottom:8px;letter-spacing:1px;">DATE</div>
+      <input type="date" id="modalSessionDate" style="width:100%;" />
+    </div>
+    <div class="btn-row">
+      <button class="btn btn-ghost" onclick="closeModal()">CANCEL</button>
+      <button class="btn btn-gym" onclick="createNewSession()">CREATE</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ═══════════════════════════════════════════════════
+// DATA — 26-week run programme
+// ═══════════════════════════════════════════════════
+const RUN_PLAN = [
+  // wk, phase, tue, thu, sun
+  [1,'Base Build',3.0,3.0,5.0],
+  [2,'Base Build',3.5,3.5,6.0],
+  [3,'Base Build',4.0,4.0,7.0],
+  [4,'Recovery',3.0,3.0,5.5],
+  [5,'Base Build',4.5,4.5,8.0],
+  [6,'Base Build',5.0,5.0,9.0],
+  [7,'Base Build',5.0,5.0,10.0],
+  [8,'Recovery',4.0,4.0,8.0],
+  [9,'Build',5.5,5.5,11.0],
+  [10,'Build',6.0,6.0,12.0],
+  [11,'Build',6.0,6.0,13.0],
+  [12,'Recovery',5.0,5.0,10.0],
+  [13,'Build',6.5,6.5,14.0],
+  [14,'Build',7.0,7.0,15.0],
+  [15,'Build',7.0,7.0,16.0],
+  [16,'Recovery',5.5,5.5,12.0],
+  [17,'Peak',7.5,7.5,17.0],
+  [18,'Peak',8.0,8.0,18.0],
+  [19,'Peak',8.0,8.0,19.0],
+  [20,'Recovery',6.0,6.0,14.0],
+  [21,'Peak',8.5,8.5,20.0],
+  [22,'Peak',8.0,8.0,21.1],
+  [23,'Taper',7.0,7.0,18.0],
+  [24,'Taper',6.0,6.0,15.0],
+  [25,'Taper',4.0,4.0,10.0],
+  [26,'Race Week',3.0,2.0,21.1],
+];
+
+const GYM_SPLITS = {
+  A: {
+    name: 'Push — Chest / Shoulders / Triceps',
+    exercises: [
+      { name: 'Flat Barbell Bench Press', sets: 4, repsTarget: '8–10', rest: '90s' },
+      { name: 'Incline DB Press', sets: 3, repsTarget: '10–12', rest: '75s' },
+      { name: 'Cable Flye', sets: 3, repsTarget: '12–15', rest: '60s' },
+      { name: 'Overhead Press (BB)', sets: 4, repsTarget: '8–10', rest: '90s' },
+      { name: 'Lateral Raise', sets: 3, repsTarget: '15–20', rest: '45s' },
+      { name: 'Skull Crushers', sets: 3, repsTarget: '10–12', rest: '60s' },
+      { name: 'Tricep Pushdown', sets: 3, repsTarget: '12–15', rest: '45s' },
+    ]
+  },
+  B: {
+    name: 'Pull — Back / Biceps / Rear Delt',
+    exercises: [
+      { name: 'Deadlift', sets: 4, repsTarget: '5–6', rest: '120s' },
+      { name: 'Barbell Row', sets: 4, repsTarget: '8–10', rest: '90s' },
+      { name: 'Lat Pulldown', sets: 3, repsTarget: '10–12', rest: '75s' },
+      { name: 'Seated Cable Row', sets: 3, repsTarget: '12–15', rest: '60s' },
+      { name: 'Face Pull', sets: 3, repsTarget: '15–20', rest: '45s' },
+      { name: 'Barbell Curl', sets: 3, repsTarget: '10–12', rest: '60s' },
+      { name: 'Hammer Curl', sets: 3, repsTarget: '12–15', rest: '45s' },
+    ]
+  },
+  C: {
+    name: 'Legs & Core',
+    exercises: [
+      { name: 'Squat (Back)', sets: 4, repsTarget: '8–10', rest: '120s' },
+      { name: 'Romanian Deadlift', sets: 4, repsTarget: '10–12', rest: '90s' },
+      { name: 'Leg Press', sets: 3, repsTarget: '12–15', rest: '90s' },
+      { name: 'Leg Curl', sets: 3, repsTarget: '12–15', rest: '60s' },
+      { name: 'Calf Raise', sets: 4, repsTarget: '15–20', rest: '45s' },
+      { name: 'Plank', sets: 3, repsTarget: '60s hold', rest: '45s' },
+      { name: 'Ab Wheel / Rollout', sets: 3, repsTarget: '10–12', rest: '45s' },
+    ]
+  }
+};
+
+// ═══════════════════════════════════════════════════
+// STATE
+// ═══════════════════════════════════════════════════
+let state = {
+  startDate: null,
+  runData: {}, // { wk: { sessions: [{day,actual,time,notes,done}] } }
+  gymSessions: {}, // { id: { split, date, exercises: [{name,sets:[{reps,weight}]}, notes] } }
+  gymSessionCounter: 0,
+  currentGymSession: null,
+  weightData: { p1: [], p2: [] },
+  currentWeightPerson: 'p1',
+};
+
+function load() {
+  const saved = localStorage.getItem('trainingTracker_v3');
+  if (saved) {
+    try { state = JSON.parse(saved); } catch(e) {}
+  }
+}
+
+function save() {
+  localStorage.setItem('trainingTracker_v3', JSON.stringify(state));
+}
+
+// ═══════════════════════════════════════════════════
+// TABS
+// ═══════════════════════════════════════════════════
+function switchTab(tab) {
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => {
+    b.classList.remove('active-run','active-gym');
+  });
+  const panelId = tab === 'weight' ? 'panel-weight' : tab === 'calendar' ? 'panel-calendar' : 'panel-' + tab;
+  document.getElementById(panelId).classList.add('active');
+  const btns = document.querySelectorAll('.tab-btn');
+  const idx = tab === 'run' ? 0 : tab === 'gym' ? 1 : tab === 'weight' ? 2 : 3;
+  btns[idx].classList.add(tab === 'gym' ? 'active-gym' : 'active-run');
+  if (tab === 'gym') renderGymPanel();
+  if (tab === 'weight') renderWeightPanel();
+  if (tab === 'calendar') renderCalendar();
+}
+
+// ═══════════════════════════════════════════════════
+// HEADER
+// ═══════════════════════════════════════════════════
+function updateHeader() {
+  const now = new Date();
+  document.getElementById('currentDateBadge').textContent =
+    now.toLocaleDateString('en-NZ', {day:'2-digit',month:'short',year:'numeric'}).toUpperCase();
+
+  if (state.startDate) {
+    const start = new Date(state.startDate);
+    const diff = Math.floor((now - start) / (7 * 86400000)) + 1;
+    const wk = Math.max(1, Math.min(26, diff));
+    document.getElementById('weekCountBadge').textContent = `WK ${wk}`;
+  }
+}
+
+// ═══════════════════════════════════════════════════
+// RUN PLAN
+// ═══════════════════════════════════════════════════
+function initRunWeekSelect() {
+  const sel = document.getElementById('runWeekSelect');
+  sel.innerHTML = '';
+  for (let i = 1; i <= 26; i++) {
+    const o = document.createElement('option');
+    o.value = i;
+    o.textContent = `Week ${i} — ${RUN_PLAN[i-1][1]}`;
+    sel.appendChild(o);
+  }
+  // Auto-select current week
+  if (state.startDate) {
+    const diff = Math.floor((new Date() - new Date(state.startDate)) / (7 * 86400000)) + 1;
+    const wk = Math.max(1, Math.min(26, diff));
+    sel.value = wk;
+  }
+}
+
+function initPlanOverview() {
+  const tbody = document.getElementById('planOverviewBody');
+  tbody.innerHTML = '';
+  RUN_PLAN.forEach(([wk, phase, tue, thu, sun]) => {
+    const total = tue + thu + sun;
+    const done = state.runData[wk]?.sessions?.filter(s => s.done).length || 0;
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td style="font-family:'DM Mono',monospace;font-size:0.72rem;color:var(--text-dim);">${wk}</td>
+      <td style="font-family:'DM Mono',monospace;font-size:0.7rem;color:var(--text-mid);">${phase}</td>
+      <td>${tue.toFixed(1)}</td>
+      <td>${thu.toFixed(1)}</td>
+      <td style="color:var(--accent-run);font-weight:600;">${sun.toFixed(1)}</td>
+      <td style="font-family:'DM Mono',monospace;">${total.toFixed(1)}</td>
+      <td>
+        <div class="prog-wrap">
+          <div class="prog-bar"><div class="prog-fill" style="width:${(done/3*100).toFixed(0)}%"></div></div>
+          <div class="prog-pct">${done}/3</div>
+        </div>
+      </td>`;
+    tbody.appendChild(tr);
+  });
+}
+
+function loadRunWeek() {
+  const wk = parseInt(document.getElementById('runWeekSelect').value);
+  const plan = RUN_PLAN[wk - 1];
+  const sessions = [
+    { day: 'TUE', type: 'Easy', target: plan[2] },
+    { day: 'THU', type: 'Tempo', target: plan[3] },
+    { day: 'SUN', type: 'Long', target: plan[4] },
+  ];
+
+  const saved = state.runData[wk]?.sessions || [];
+  const tbody = document.getElementById('runTbody');
+  tbody.innerHTML = '';
+
+  sessions.forEach((s, i) => {
+    const sv = saved[i] || {};
+    const typeCls = s.type === 'Easy' ? 'type-easy' : s.type === 'Tempo' ? 'type-tempo' : 'type-long';
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td class="run-day">${s.day}</td>
+      <td><span class="session-type ${typeCls}">${s.type}</span></td>
+      <td style="font-family:'DM Mono',monospace;color:var(--accent-run);">${s.target.toFixed(1)}</td>
+      <td><input type="number" class="run-actual" step="0.1" placeholder="${s.target.toFixed(1)}" value="${sv.actual || ''}" onchange="updateRunStats(${wk})" style="width:80px;" /></td>
+      <td><input type="text" class="run-time" placeholder="e.g. 28:30" value="${sv.time || ''}" onchange="updateRunStats(${wk})" style="width:80px;" /></td>
+      <td class="run-pace" style="font-family:'DM Mono',monospace;font-size:0.75rem;color:var(--text-dim);">—</td>
+      <td><input type="text" class="run-notes" placeholder="Notes…" value="${sv.notes || ''}" style="width:130px;" /></td>
+      <td><input type="checkbox" class="run-done" ${sv.done ? 'checked' : ''} onchange="updateRunStats(${wk})" style="accent-color:var(--accent-run);width:16px;height:16px;" /></td>`;
+    tbody.appendChild(tr);
+    computePace(tr, s.target);
+  });
+
+  updateRunStats(wk);
+}
+
+function computePace(tr, target) {
+  const actual = parseFloat(tr.querySelector('.run-actual').value) || target;
+  const timeStr = tr.querySelector('.run-time').value;
+  if (!timeStr) { tr.querySelector('.run-pace').textContent = '—'; return; }
+  const parts = timeStr.split(':');
+  if (parts.length < 2) return;
+  const mins = parseFloat(parts[0]) + (parseFloat(parts[1]) / 60);
+  if (!actual || actual === 0) return;
+  const paceMin = mins / actual;
+  const pm = Math.floor(paceMin);
+  const ps = Math.round((paceMin - pm) * 60).toString().padStart(2, '0');
+  tr.querySelector('.run-pace').textContent = `${pm}:${ps}`;
+}
+
+function updateRunStats(wk) {
+  const rows = document.querySelectorAll('#runTbody tr');
+  let totalKm = 0, done = 0, bestPaceVal = Infinity, bestPaceStr = '—';
+  const plan = RUN_PLAN[wk - 1];
+  const targets = [plan[2], plan[3], plan[4]];
+
+  rows.forEach((tr, i) => {
+    const actual = parseFloat(tr.querySelector('.run-actual').value) || 0;
+    const isDone = tr.querySelector('.run-done').checked;
+    if (isDone) { totalKm += actual || targets[i]; done++; }
+    computePace(tr, targets[i]);
+    const timeStr = tr.querySelector('.run-time').value;
+    const km = parseFloat(tr.querySelector('.run-actual').value) || targets[i];
+    if (timeStr && km) {
+      const parts = timeStr.split(':');
+      if (parts.length >= 2) {
+        const mins = parseFloat(parts[0]) + (parseFloat(parts[1]) / 60);
+        const pace = mins / km;
+        if (pace < bestPaceVal) {
+          bestPaceVal = pace;
+          const pm = Math.floor(pace);
+          const ps = Math.round((pace - pm) * 60).toString().padStart(2, '0');
+          bestPaceStr = `${pm}:${ps}`;
+        }
+      }
+    }
+  });
+
+  const longDone = done > 0 ? (parseFloat(document.querySelectorAll('.run-actual')[2]?.value) || plan[4]) : 0;
+  document.getElementById('stat-week-km').textContent = totalKm.toFixed(1);
+  document.getElementById('stat-runs-done').textContent = `${done}/3`;
+  document.getElementById('stat-long-run').textContent = done >= 3 ? (parseFloat(document.querySelectorAll('.run-actual')[2]?.value) || plan[4]).toFixed(1) : plan[4].toFixed(1);
+  document.getElementById('stat-pace').textContent = bestPaceStr;
+}
+
+function saveRunWeek() {
+  const wk = parseInt(document.getElementById('runWeekSelect').value);
+  const rows = document.querySelectorAll('#runTbody tr');
+  const sessions = [];
+  rows.forEach(tr => {
+    sessions.push({
+      actual: parseFloat(tr.querySelector('.run-actual').value) || null,
+      time: tr.querySelector('.run-time').value,
+      notes: tr.querySelector('.run-notes').value,
+      done: tr.querySelector('.run-done').checked,
+    });
+  });
+  if (!state.runData[wk]) state.runData[wk] = {};
+  state.runData[wk].sessions = sessions;
+  save();
+  initPlanOverview();
+  toast('Run week saved!', 'run');
+}
+
+function saveStartDate() {
+  state.startDate = document.getElementById('startDateInput').value;
+  if (state.startDate) calViewDate = new Date(state.startDate + 'T00:00:00');
+  save();
+  updateHeader();
+}
+
+// ═══════════════════════════════════════════════════
+// GYM LOG
+// ═══════════════════════════════════════════════════
+function renderGymPanel() {
+  const sel = document.getElementById('gymSessionSelect');
+  const ids = Object.keys(state.gymSessions).sort((a,b) => a - b);
+  sel.innerHTML = '<option value="">— select —</option>';
+  ids.forEach(id => {
+    const s = state.gymSessions[id];
+    const o = document.createElement('option');
+    o.value = id;
+    o.textContent = `#${id} · ${s.split} · ${s.date || '?'}`;
+    sel.appendChild(o);
+  });
+  renderSessionChips();
+  if (state.currentGymSession && state.gymSessions[state.currentGymSession]) {
+    sel.value = state.currentGymSession;
+    renderGymSession(state.currentGymSession);
+  }
+}
+
+function renderSessionChips() {
+  const row = document.getElementById('savedSessionsRow');
+  const ids = Object.keys(state.gymSessions).sort((a,b) => b - a).slice(0, 12);
+  row.innerHTML = '';
+  ids.forEach(id => {
+    const s = state.gymSessions[id];
+    const chip = document.createElement('div');
+    chip.className = 'session-chip' + (state.currentGymSession == id ? ' active' : '');
+    chip.textContent = `#${id} ${s.split}`;
+    chip.onclick = () => { document.getElementById('gymSessionSelect').value = id; loadGymSession(); };
+    row.appendChild(chip);
+  });
+}
+
+function loadGymSession() {
+  const id = document.getElementById('gymSessionSelect').value;
+  if (!id) return;
+  state.currentGymSession = id;
+  renderGymSession(id);
+  renderSessionChips();
+}
+
+function renderGymSession(id) {
+  const s = state.gymSessions[id];
+  if (!s) return;
+  const split = GYM_SPLITS[s.split];
+  const container = document.getElementById('gymContent');
+
+  container.innerHTML = `
+    <div class="card">
+      <div style="display:flex;align-items:center;gap:14px;margin-bottom:18px;flex-wrap:wrap;">
+        <span class="split-badge">SESSION ${s.split}</span>
+        <div>
+          <div style="font-weight:600;font-size:0.95rem;">${split.name}</div>
+          <div style="font-family:'DM Mono',monospace;font-size:0.68rem;color:var(--text-dim);">SESSION #${id} · ${s.date || '—'}</div>
+        </div>
+      </div>
+
+      <table class="gym-table" id="gymExTable">
+        <thead>
+          <tr>
+            <th style="min-width:160px;">EXERCISE</th>
+            <th>TARGET</th>
+            <th>REST</th>
+            <th colspan="4">SETS (REPS × WEIGHT kg)</th>
+            <th>NOTES</th>
+          </tr>
+        </thead>
+        <tbody id="gymExBody"></tbody>
+      </table>
+
+      <div class="divider"></div>
+      <div style="font-family:'DM Mono',monospace;font-size:0.65rem;color:var(--text-dim);margin-bottom:8px;letter-spacing:1px;">SESSION NOTES</div>
+      <textarea id="gymSessionNotes" placeholder="How did it feel? PBs? Injuries?">${s.notes || ''}</textarea>
+    </div>`;
+
+  const tbody = document.getElementById('gymExBody');
+  split.exercises.forEach((ex, ei) => {
+    const saved = s.exercises?.[ei] || { sets: [] };
+    const tr = document.createElement('tr');
+
+    let setsHTML = '';
+    for (let si = 0; si < ex.sets; si++) {
+      const sv = saved.sets?.[si] || {};
+      setsHTML += `
+        <td>
+          <div class="set-input-group">
+            <div class="set-label">S${si+1}</div>
+            <input type="number" class="set-input" placeholder="reps" value="${sv.reps || ''}" min="0" max="50" />
+            <input type="number" class="weight-input" placeholder="kg" value="${sv.weight || ''}" step="0.5" min="0" max="500" />
+          </div>
+        </td>`;
+    }
+    // Pad to 4 columns
+    for (let si = ex.sets; si < 4; si++) {
+      setsHTML += `<td style="color:var(--border);font-size:0.65rem;text-align:center;">—</td>`;
+    }
+
+    tr.innerHTML = `
+      <td class="ex-name">${ex.name}</td>
+      <td class="ex-target">${ex.repsTarget}</td>
+      <td class="ex-target">${ex.rest}</td>
+      ${setsHTML}
+      <td><input type="text" placeholder="notes" value="${saved.notes || ''}" style="width:100px;" /></td>`;
+    tbody.appendChild(tr);
+  });
+}
+
+function saveGymSession() {
+  const id = state.currentGymSession;
+  if (!id || !state.gymSessions[id]) { toast('No session selected', 'gym'); return; }
+  const s = state.gymSessions[id];
+  const split = GYM_SPLITS[s.split];
+  const rows = document.querySelectorAll('#gymExBody tr');
+  const exercises = [];
+
+  rows.forEach((tr, ei) => {
+    const ex = split.exercises[ei];
+    const inputs = tr.querySelectorAll('input');
+    let idx = 0;
+    const sets = [];
+    for (let si = 0; si < ex.sets; si++) {
+      const reps = inputs[idx++]?.value;
+      const weight = inputs[idx++]?.value;
+      sets.push({ reps: reps || '', weight: weight || '' });
+    }
+    const notesInput = tr.querySelector('input[placeholder="notes"]');
+    exercises.push({ sets, notes: notesInput?.value || '' });
+  });
+
+  s.exercises = exercises;
+  s.notes = document.getElementById('gymSessionNotes')?.value || '';
+  save();
+  toast('Session saved!', 'gym');
+}
+
+function newGymSession() {
+  document.getElementById('modalSessionDate').value = new Date().toISOString().split('T')[0];
+  document.getElementById('newSessionModal').classList.add('show');
+}
+
+function closeModal() {
+  document.getElementById('newSessionModal').classList.remove('show');
+}
+
+function createNewSession() {
+  const split = document.getElementById('modalSplitSelect').value;
+  const date = document.getElementById('modalSessionDate').value;
+  state.gymSessionCounter++;
+  const id = state.gymSessionCounter;
+  state.gymSessions[id] = { split, date, exercises: [], notes: '' };
+  state.currentGymSession = id;
+  save();
+  closeModal();
+  renderGymPanel();
+  toast(`Session #${id} created!`, 'gym');
+}
+
+function deleteGymSession() {
+  const id = state.currentGymSession;
+  if (!id) return;
+  if (!confirm(`Delete session #${id}?`)) return;
+  delete state.gymSessions[id];
+  state.currentGymSession = null;
+  save();
+  document.getElementById('gymContent').innerHTML = `<div class="card" style="text-align:center;padding:40px;"><div style="color:var(--text-dim);font-family:'DM Mono',monospace;font-size:0.8rem;">SELECT OR CREATE A SESSION ABOVE</div></div>`;
+  renderGymPanel();
+  toast('Session deleted', 'gym');
+}
+
+// ═══════════════════════════════════════════════════
+// WEIGHT
+// ═══════════════════════════════════════════════════
+function switchWeightPerson(p) {
+  state.currentWeightPerson = p;
+  document.getElementById('wTabP1').style.borderColor = p === 'p1' ? 'var(--accent-run)' : 'var(--border)';
+  document.getElementById('wTabP1').style.color = p === 'p1' ? 'var(--accent-run)' : 'var(--text-mid)';
+  document.getElementById('wTabP2').style.borderColor = p === 'p2' ? 'var(--accent-run)' : 'var(--border)';
+  document.getElementById('wTabP2').style.color = p === 'p2' ? 'var(--accent-run)' : 'var(--text-mid)';
+  renderWeightPanel();
+}
+
+function addWeightEntry() {
+  const date = document.getElementById('weightDate').value;
+  const weight = parseFloat(document.getElementById('weightInput').value);
+  const person = document.getElementById('weightPerson').value;
+  if (!date || isNaN(weight)) { toast('Enter a valid date and weight', 'run'); return; }
+
+  if (!state.weightData[person]) state.weightData[person] = [];
+  // Remove existing entry for same date
+  state.weightData[person] = state.weightData[person].filter(e => e.date !== date);
+  state.weightData[person].push({ date, weight });
+  state.weightData[person].sort((a,b) => b.date.localeCompare(a.date));
+  save();
+  document.getElementById('weightInput').value = '';
+  switchWeightPerson(person);
+  toast('Weight logged!', 'run');
+}
+
+function renderWeightPanel() {
+  const p = state.currentWeightPerson;
+  const entries = state.weightData[p] || [];
+  const container = document.getElementById('weightEntries');
+  container.innerHTML = '';
+
+  if (entries.length === 0) {
+    container.innerHTML = '<div style="color:var(--text-dim);font-family:\'DM Mono\',monospace;font-size:0.75rem;padding:16px 0;">No entries yet</div>';
+    document.getElementById('w-current').textContent = '—';
+    document.getElementById('w-start').textContent = '—';
+    document.getElementById('w-change').textContent = '—';
+    document.getElementById('w-entries').textContent = '0';
+    return;
+  }
+
+  document.getElementById('w-current').textContent = entries[0].weight.toFixed(1);
+  document.getElementById('w-start').textContent = entries[entries.length - 1].weight.toFixed(1);
+  const change = entries[0].weight - entries[entries.length - 1].weight;
+  const chEl = document.getElementById('w-change');
+  chEl.textContent = (change > 0 ? '+' : '') + change.toFixed(1) + ' kg';
+  chEl.style.color = change <= 0 ? 'var(--success)' : 'var(--danger)';
+  document.getElementById('w-entries').textContent = entries.length;
+
+  entries.forEach((e, i) => {
+    const prev = entries[i + 1];
+    const delta = prev ? e.weight - prev.weight : null;
+    const row = document.createElement('div');
+    row.className = 'weight-row';
+    const date = new Date(e.date + 'T12:00:00');
+    const dateStr = date.toLocaleDateString('en-NZ', {day:'2-digit',month:'short',year:'numeric'});
+    row.innerHTML = `
+      <div class="weight-date">${dateStr}</div>
+      <div class="weight-val">${e.weight.toFixed(1)}<span style="font-family:'DM Sans',sans-serif;font-size:0.7rem;color:var(--text-dim);margin-left:2px;">kg</span></div>
+      ${delta !== null ? `<div class="weight-change ${delta > 0 ? 'wc-up' : 'wc-down'}">${delta > 0 ? '+' : ''}${delta.toFixed(1)}</div>` : ''}
+      <button onclick="deleteWeight('${p}','${e.date}')" class="btn btn-danger" style="padding:4px 10px;font-size:0.6rem;margin-left:auto;">✕</button>`;
+    container.appendChild(row);
+  });
+}
+
+function deleteWeight(person, date) {
+  state.weightData[person] = state.weightData[person].filter(e => e.date !== date);
+  save();
+  renderWeightPanel();
+}
+
+// ═══════════════════════════════════════════════════
+// CALENDAR
+// ═══════════════════════════════════════════════════
+
+// calViewDate: the month we're currently viewing
+let calViewDate = new Date();
+
+// Day-of-week schedule: Mon=0,Tue=1,Wed=2,Thu=3,Fri=4,Sat=5,Sun=6
+// For each training week: [Mon,Tue,Wed,Thu,Fri,Sat,Sun]
+// Mon=Gym A, Tue=Run Easy, Wed=Gym B, Thu=Run Tempo, Fri=Rest, Sat=Gym C, Sun=Long Run
+function getSessionForDow(dow, weekIdx) {
+  // dow: 0=Mon ... 6=Sun
+  const plan = RUN_PLAN[weekIdx];
+  if (!plan) return null;
+  const [wk, phase, tue, thu, sun] = plan;
+  const sessions = [
+    { type: 'gym-a', label: 'Gym A · Push', detail: 'Chest / Shoulders / Triceps' },
+    { type: 'run-easy', label: `Easy ${tue.toFixed(1)}km`, detail: `Target: ${tue.toFixed(1)} km` },
+    { type: 'gym-b', label: 'Gym B · Pull', detail: 'Back / Biceps / Rear Delt' },
+    { type: 'run-tempo', label: `Tempo ${thu.toFixed(1)}km`, detail: `Target: ${thu.toFixed(1)} km` },
+    { type: 'rest', label: 'Rest', detail: 'Active recovery / mobility' },
+    { type: 'gym-c', label: 'Gym C · Legs', detail: 'Legs & Core' },
+    { type: 'run-long', label: `Long ${sun.toFixed(1)}km`, detail: `Target: ${sun.toFixed(1)} km` },
+  ];
+  // Week 26 Sunday = race day
+  if (weekIdx === 25 && dow === 6) {
+    return { type: 'race', label: '🏁 RACE DAY', detail: 'Queenstown Half Marathon · 21.1km' };
+  }
+  return sessions[dow];
+}
+
+function getTrainingDayInfo(date) {
+  // Returns { weekIdx, dow, session } or null if outside training
+  if (!state.startDate) return null;
+  const start = new Date(state.startDate + 'T00:00:00');
+  // Normalise to midnight
+  const d = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+  const s = new Date(start.getFullYear(), start.getMonth(), start.getDate());
+  const diffDays = Math.round((d - s) / 86400000);
+  if (diffDays < 0 || diffDays >= 182) return null; // 26 weeks = 182 days
+  const weekIdx = Math.floor(diffDays / 7);
+  const dow = diffDays % 7; // 0=Mon (assumes startDate is Monday)
+  const session = getSessionForDow(dow, weekIdx);
+  return { weekIdx, dow, session, diffDays };
+}
+
+function isSessionDone(weekIdx, dow) {
+  const wk = weekIdx + 1;
+  if (dow === 0 || dow === 2 || dow === 5) {
+    // Gym — check if any gym session exists on this week with matching split
+    const splitMap = { 0: 'A', 2: 'B', 5: 'C' };
+    const split = splitMap[dow];
+    return Object.values(state.gymSessions).some(s => {
+      if (s.split !== split) return false;
+      // Check if date falls in this training week
+      if (!s.date || !state.startDate) return false;
+      const sessionDate = new Date(s.date + 'T00:00:00');
+      const startDate = new Date(state.startDate + 'T00:00:00');
+      const diffDays = Math.round((sessionDate - startDate) / 86400000);
+      return Math.floor(diffDays / 7) === weekIdx;
+    });
+  }
+  if (dow === 1 || dow === 3 || dow === 6) {
+    // Run
+    const runIdx = dow === 1 ? 0 : dow === 3 ? 1 : 2;
+    return state.runData[wk]?.sessions?.[runIdx]?.done === true;
+  }
+  return false;
+}
+
+function evClass(type) {
+  const map = {
+    'gym-a': 'ev-gym-a', 'gym-b': 'ev-gym-b', 'gym-c': 'ev-gym-c',
+    'run-easy': 'ev-run-easy', 'run-tempo': 'ev-run-tempo', 'run-long': 'ev-run-long',
+    'rest': 'ev-rest', 'race': 'ev-race'
+  };
+  return map[type] || 'ev-rest';
+}
+
+function renderCalendar() {
+  if (!state.startDate) {
+    document.getElementById('calGrid').innerHTML = `
+      <div class="cal-day-header">MON</div><div class="cal-day-header">TUE</div>
+      <div class="cal-day-header">WED</div><div class="cal-day-header">THU</div>
+      <div class="cal-day-header">FRI</div><div class="cal-day-header">SAT</div>
+      <div class="cal-day-header">SUN</div>
+      <div style="grid-column:1/-1;text-align:center;padding:40px;color:var(--text-dim);font-family:'DM Mono',monospace;font-size:0.78rem;">
+        SET A START DATE IN THE RUN PLAN TAB TO POPULATE THE CALENDAR
+      </div>`;
+    return;
+  }
+
+  const year = calViewDate.getFullYear();
+  const month = calViewDate.getMonth();
+  const today = new Date();
+
+  document.getElementById('calMonthTitle').textContent =
+    calViewDate.toLocaleDateString('en-NZ', { month: 'long', year: 'numeric' }).toUpperCase();
+
+  // First day of month — find Monday offset (week starts Monday)
+  const firstDay = new Date(year, month, 1);
+  let startOffset = firstDay.getDay() - 1; // 0=Mon
+  if (startOffset < 0) startOffset = 6;
+
+  const daysInMonth = new Date(year, month + 1, 0).getDate();
+
+  // Rebuild grid (keep headers)
+  const grid = document.getElementById('calGrid');
+  grid.innerHTML = `
+    <div class="cal-day-header">MON</div><div class="cal-day-header">TUE</div>
+    <div class="cal-day-header">WED</div><div class="cal-day-header">THU</div>
+    <div class="cal-day-header">FRI</div><div class="cal-day-header">SAT</div>
+    <div class="cal-day-header">SUN</div>`;
+
+  // Empty cells before first day
+  for (let i = 0; i < startOffset; i++) {
+    const empty = document.createElement('div');
+    empty.className = 'cal-cell empty';
+    grid.appendChild(empty);
+  }
+
+  for (let d = 1; d <= daysInMonth; d++) {
+    const date = new Date(year, month, d);
+    const info = getTrainingDayInfo(date);
+    const isToday = date.toDateString() === today.toDateString();
+
+    const cell = document.createElement('div');
+    cell.className = 'cal-cell' + (isToday ? ' today' : '') + (!info ? ' out-of-range' : '');
+
+    let html = `<div class="cal-date">${d}</div>`;
+
+    if (info && info.session) {
+      const done = isSessionDone(info.weekIdx, info.dow);
+      html += `<div class="cal-event ${evClass(info.session.type)}">${info.session.label}</div>`;
+      if (done) html += `<div class="cal-done-dot"></div>`;
+      html += `<div class="cal-week-label">WK${info.weekIdx + 1}</div>`;
+
+      cell.onclick = () => showWeekDetail(info.weekIdx);
+    }
+
+    cell.innerHTML = html;
+    grid.appendChild(cell);
+  }
+
+  renderCalStats();
+}
+
+function renderCalStats() {
+  const totalRuns = Object.values(state.runData).reduce((acc, wk) => {
+    return acc + (wk.sessions?.filter(s => s.done).length || 0);
+  }, 0);
+  const totalGym = Object.keys(state.gymSessions).length;
+  const totalWeeksDone = Object.keys(state.runData).filter(wk => {
+    const s = state.runData[wk].sessions || [];
+    return s.filter(x => x.done).length === 3;
+  }).length;
+
+  let weeksRemaining = '—';
+  if (state.startDate) {
+    const start = new Date(state.startDate);
+    const now = new Date();
+    const elapsed = Math.floor((now - start) / (7 * 86400000));
+    weeksRemaining = Math.max(0, 26 - elapsed);
+  }
+
+  document.getElementById('calStats').innerHTML = `
+    <div class="cal-stat-mini"><div class="val">${totalRuns}</div><div class="lbl">Runs Done</div></div>
+    <div class="cal-stat-mini"><div class="val" style="color:var(--accent-gym);">${totalGym}</div><div class="lbl">Gym Sessions</div></div>
+    <div class="cal-stat-mini"><div class="val">${totalWeeksDone}</div><div class="lbl">Full Weeks</div></div>
+    <div class="cal-stat-mini"><div class="val" style="color:var(--text-mid);">${weeksRemaining}</div><div class="lbl">Weeks Left</div></div>`;
+}
+
+function showWeekDetail(weekIdx) {
+  const detail = document.getElementById('weekDetail');
+  const title = document.getElementById('weekDetailTitle');
+  const body = document.getElementById('weekDetailBody');
+  const plan = RUN_PLAN[weekIdx];
+  if (!plan) return;
+
+  title.textContent = `WEEK ${weekIdx + 1} — ${plan[1].toUpperCase()}`;
+
+  const start = new Date(state.startDate + 'T00:00:00');
+  const weekStart = new Date(start);
+  weekStart.setDate(start.getDate() + weekIdx * 7);
+
+  const days = ['MON','TUE','WED','THU','FRI','SAT','SUN'];
+  const today = new Date();
+
+  let html = '';
+  days.forEach((dayName, dow) => {
+    const dayDate = new Date(weekStart);
+    dayDate.setDate(weekStart.getDate() + dow);
+    const session = getSessionForDow(dow, weekIdx);
+    const done = isSessionDone(weekIdx, dow);
+    const isToday = dayDate.toDateString() === today.toDateString();
+    const dateStr = dayDate.toLocaleDateString('en-NZ', { day: '2-digit', month: 'short' });
+
+    let badgeStyle = '';
+    let sessionName = session ? session.label : '—';
+    let detail = session ? session.detail : '';
+
+    if (session) {
+      const colors = {
+        'gym-a': 'background:rgba(255,107,53,0.15);color:#ff9870;',
+        'gym-b': 'background:rgba(255,149,53,0.12);color:#ffb080;',
+        'gym-c': 'background:rgba(255,80,53,0.12);color:#ff8060;',
+        'run-easy': 'background:rgba(34,197,94,0.12);color:#4ade80;',
+        'run-tempo': 'background:rgba(251,191,36,0.12);color:#fbbf24;',
+        'run-long': 'background:rgba(0,229,160,0.15);color:#00e5a0;',
+        'rest': 'background:rgba(107,114,128,0.08);color:#6b7280;',
+        'race': 'background:rgba(168,85,247,0.2);color:#c084fc;',
+      };
+      badgeStyle = colors[session.type] || '';
+    }
+
+    // Pull actual logged data
+    let loggedData = '';
+    if (session?.type === 'run-easy' || session?.type === 'run-tempo' || session?.type === 'run-long') {
+      const runIdx = dow === 1 ? 0 : dow === 3 ? 1 : 2;
+      const wk = weekIdx + 1;
+      const sv = state.runData[wk]?.sessions?.[runIdx];
+      if (sv?.actual) loggedData = `${sv.actual}km`;
+      if (sv?.time) loggedData += (loggedData ? ' · ' : '') + sv.time;
+    }
+
+    html += `
+      <div class="day-row">
+        <div class="day-name ${isToday ? 'today-label' : ''}">${dayName} <span style="font-size:0.6rem;color:var(--text-dim)">${dateStr}</span></div>
+        <div class="day-session-badge" style="${badgeStyle}">${sessionName}</div>
+        <div class="day-detail-text">${loggedData || detail}</div>
+        <div style="font-size:1.1rem;">${done ? '✅' : session?.type === 'rest' ? '—' : '⬜'}</div>
+      </div>`;
+  });
+
+  body.innerHTML = html;
+  detail.classList.add('open');
+  detail.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+
+function closeWeekDetail() {
+  document.getElementById('weekDetail').classList.remove('open');
+}
+
+function calPrev() {
+  calViewDate.setMonth(calViewDate.getMonth() - 1);
+  renderCalendar();
+}
+function calNext() {
+  calViewDate.setMonth(calViewDate.getMonth() + 1);
+  renderCalendar();
+}
+function calToday() {
+  calViewDate = new Date();
+  renderCalendar();
+}
+
+// ═══════════════════════════════════════════════════
+// ═══════════════════════════════════════════════════
+let toastTimer;
+function toast(msg, type = 'run') {
+  const el = document.getElementById('toast');
+  el.textContent = msg;
+  el.className = `toast ${type} show`;
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => el.classList.remove('show'), 2200);
+}
+
+// ═══════════════════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════════════════
+load();
+updateHeader();
+initRunWeekSelect();
+initPlanOverview();
+
+// Restore start date
+if (state.startDate) {
+  document.getElementById('startDateInput').value = state.startDate;
+}
+
+// Set weight date to today
+document.getElementById('weightDate').value = new Date().toISOString().split('T')[0];
+
+// Nav calendar to start date month if set
+if (state.startDate) {
+  calViewDate = new Date(state.startDate + 'T00:00:00');
+}
+
+loadRunWeek();
+</script>
+</body>
+</html>
